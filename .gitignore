@@ -1,0 +1,6 @@
+# IDE ignore
+.idea/
+*.ipr
+*.iml
+*.iws
+.vscode/
