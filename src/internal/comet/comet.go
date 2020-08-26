@@ -28,7 +28,9 @@ func NewComet(cfg *conf.Config) *Comet{
 	}
 	return c
 }
-
+func (c *Comet) Put (ch *Channel, roomID int32) {
+	c.Room(roomID).Put(ch)
+}
 func (c *Comet) Room(roomID int32) (room *Room){
 	room = c.rooms[roomID]
 	return

@@ -1,31 +1,44 @@
 package comet
 
 import (
-	"fmt"
+	"bdim/src/internal/comet/conf"
 	"github.com/gorilla/websocket"
-	"net"
 	"net/http"
-	"time"
+	"strconv"
 )
 
 var (
-	registerCh = make(chan *Client)
+	registerCh = make(chan *Register)
 )
+
 type ClientManager struct {
 	addr string
-	upgrade *websocket.Upgrader
-	Clients []*Client
+	Clients map[*Client]bool
+	comet *Comet
+	cfg *conf.Config
 }
 type Client struct {
 	channel *Channel
 	conn *websocket.Conn
 }
 
-func NewClientManage() *ClientManager {
-	return nil
+type Register struct {
+	conn *websocket.Conn
+	roomID int32
 }
 
-func NewClient(conn *websocket.Conn, c *Channel) *Client{
+func NewClientManage(cfg *conf.Config, comet *Comet) *ClientManager {
+	cm := &ClientManager{
+		addr:    cfg.WsAddr,
+		Clients: make(map[*Client]bool, cfg.Client),
+		comet:   comet,
+		cfg:     cfg,
+	}
+	cm.registerPros()
+	return cm
+}
+
+func NewClient(conn *websocket.Conn, c *Channel, roomID int32) *Client{
 	client := &Client{
 		channel: c,
 		conn: conn,
@@ -43,11 +56,12 @@ func (c *Client) pushProc (){
 
 func (cm *ClientManager) registerPros() {
 	for {
-		conn := <-registerCh
+		register := <-registerCh
 		// new channel
-
-		client := NewClient(conn, nil) //TODO:add channel
-		cm.Clients = append(cm.Clients, client)
+		ch := NewChannel(cm.cfg)
+		cm.comet.Put(ch, register.roomID)
+		client := NewClient(register.conn, ch, register.roomID)
+		cm.Clients[client] = true
 	}
 }
 
@@ -60,15 +74,21 @@ func ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	upgrade := websocket.Upgrader{
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
-		CheckOrigin:     checkOrigin,
+		CheckOrigin: func(r *http.Request) bool {
+			return true
+		},
 	}
-	roomid := r.Header["roomid"]
-
-	conn, err := upgrade.Upgrade(w, r, nil)
-	// get room id
-	// TODO:封装conn，在comet.room中添加channel
+	roomid, err := strconv.ParseInt(r.Header["roomid"][0], 10, 32)
 	if err != nil {
 
 	}
-	registerCh <- conn
+	conn, err := upgrade.Upgrade(w, r, nil)
+	if err != nil {
+
+	}
+	register := &Register{
+		conn:    conn,
+		roomID:  int32(roomid),
+	}
+	registerCh <- register
 }
