@@ -14,7 +14,7 @@ import (
 
 const (
 	ver   = "0.0.1"
-	appid = "dbim.logic"
+	appid = "bdim.logic"
 )
 
 func main() {
@@ -22,7 +22,7 @@ func main() {
 	if err := conf.Init(); err != nil {
 		panic(err)
 	}
-	log.Infof("dbim-logic [version: %s env: %+v] start", ver, conf.Conf)
+	log.Infof("bdim-logic [version: %s env: %+v] start", ver, conf.Conf)
 
 	// logic
 	srv := logic.New(conf.Conf)
@@ -33,12 +33,12 @@ func main() {
 	signal.Notify(c, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)
 	for {
 		s := <-c
-		log.Infof("dbim-logic get a signal %s", s.String())
+		log.Infof("bdim-logic get a signal %s", s.String())
 		switch s {
 		case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT:
 			srv.Close()
 			httpSrv.Close()
-			log.Infof("dbim-logic [version: %s] exit", ver)
+			log.Infof("bdim-logic [version: %s] exit", ver)
 			log.Flush()
 			return
 		case syscall.SIGHUP:
