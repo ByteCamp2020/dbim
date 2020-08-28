@@ -45,7 +45,6 @@ func (s *Server) Close() {
 
 type Arg struct {
 	Op   int32  `form:"operation" binding:"required"`
-	Type string `form:"type" binding:"required"`
 	Room string `form:"room" binding:"required"`
 	User string `form:"user" binding:"required"`
 }
@@ -66,7 +65,7 @@ func (s *Server) push(c *gin.Context) {
 		errors(c, RequestErr, err.Error())
 		return
 	}
-	if err = s.logic.PushRoom(c, arg.Op, arg.Type, arg.Room, arg.User, msg); err != nil {
+	if err = s.logic.PushRoom(c, arg.Op, arg.Room, arg.User, msg); err != nil {
 		errors(c, ServerErr, err.Error())
 		return
 	}
