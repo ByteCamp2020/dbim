@@ -5,6 +5,7 @@ import (
 	"bdim/src/internal/comet"
 	"bdim/src/internal/comet/conf"
 	"context"
+	"fmt"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
 	"net"
@@ -22,7 +23,7 @@ func New(cfg *conf.RPCServer, c *comet.Comet) *grpc.Server {
 		Timeout:          cfg.KeepAliveTimeout,
 		MaxConnectionAge: cfg.MaxLifeTime,
 	})
-	lis, err := net.Listen("tcp", cfg.Addr)
+	lis, err := net.Listen("tcp", fmt.Sprintf("%s", cfg.Addr))
 	if err != nil {
 
 	}
@@ -38,6 +39,7 @@ func New(cfg *conf.RPCServer, c *comet.Comet) *grpc.Server {
 
 func (s *server) Push(ctx context.Context, p *pb.Package) (*pb.PushReply, error){
 	s.c.Push(p)
+	fmt.Println("Receive message", p.Body)
 	resp := &pb.PushReply{}
 	return resp, nil
 }

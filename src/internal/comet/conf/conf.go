@@ -20,7 +20,7 @@ func Init() *Config {
 	return &Config{
 
 		WebSocket: &WebSocket{
-			WsAddr: "3101",
+			WsAddr: ":3101",
 			ClientNo: int(1e7),
 		},
 		RPCServer: &RPCServer{

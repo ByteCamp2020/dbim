@@ -2,6 +2,7 @@ package comet
 
 import (
 	"bdim/src/internal/comet/conf"
+	"fmt"
 	"github.com/golang/glog"
 	"github.com/gorilla/websocket"
 	"net/http"
@@ -52,6 +53,7 @@ func NewClient(conn *websocket.Conn, c *Channel, roomID int32) *Client{
 func (c *Client) pushProc (){
 	for {
 		info := c.channel.Listen()
+		fmt.Println(info)
 		err := c.conn.WriteMessage(websocket.BinaryMessage, info.Body)
 		if err != nil {
 			return
@@ -106,7 +108,7 @@ func serveHTTP(w http.ResponseWriter, r *http.Request) {
 			return true
 		},
 	}
-	roomid, err := strconv.ParseInt(r.Header["roomid"][0], 10, 32)
+	roomid, err := strconv.ParseInt(r.URL.Query()["roomid"][0], 10, 32)
 	if err != nil {
 		glog.Error("Args wrong", err)
 	}
