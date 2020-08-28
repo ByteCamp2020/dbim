@@ -3,6 +3,7 @@ package http
 import (
 	"bdim/src/internal/logic"
 	"bdim/src/internal/logic/conf"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -34,6 +35,7 @@ func New(c *conf.HTTPServer, l *logic.Logic) *Server {
 func (s *Server) initRouter() {
 	group := s.engine.Group("/bdim")
 	group.GET("/test", s.test)
+	group.POST("/push", s.push)
 }
 
 // Close close the server.
@@ -41,6 +43,32 @@ func (s *Server) Close() {
 
 }
 
+type Arg struct {
+	Op   int32  `form:"operation" binding:"required"`
+	Type string `form:"type" binding:"required"`
+	Room string `form:"room" binding:"required"`
+	User string `form:"user" binding:"required"`
+}
+
 func (s *Server) test(c *gin.Context) {
 	c.JSON(http.StatusOK, "hello")
+}
+
+func (s *Server) push(c *gin.Context) {
+	var arg Arg
+	if err := c.BindQuery(&arg); err != nil {
+		errors(c, RequestErr, err.Error())
+		return
+	}
+	// read message
+	msg, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		errors(c, RequestErr, err.Error())
+		return
+	}
+	if err = s.logic.PushRoom(c, arg.Op, arg.Type, arg.Room, arg.User, msg); err != nil {
+		errors(c, ServerErr, err.Error())
+		return
+	}
+	result(c, nil, OK)
 }

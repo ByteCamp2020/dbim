@@ -55,4 +55,3 @@ func MWHandleErrors() gin.HandlerFunc {
 		})
 	}
 }
-
