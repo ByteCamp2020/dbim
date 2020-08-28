@@ -42,10 +42,10 @@ func (l *Logic) Close() {
 
 }
 
-func (l *Logic) PushRoom(c context.Context, op int32, room, user string, msg []byte) (err error) {
+func (l *Logic) PushRoom(c context.Context, op int32, room int32, user string, msg []byte) (err error) {
 	pushMsg := &pb.PushMsg{
 		Op:   op,
-		Room: room,
+		Roomid: room,
 		User: user,
 		Msg:  msg,
 	}

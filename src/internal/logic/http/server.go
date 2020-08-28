@@ -45,7 +45,7 @@ func (s *Server) Close() {
 
 type Arg struct {
 	Op   int32  `form:"operation" binding:"required"`
-	Room string `form:"room" binding:"required"`
+	Room int32 `form:"room" binding:"required"`
 	User string `form:"user" binding:"required"`
 }
 

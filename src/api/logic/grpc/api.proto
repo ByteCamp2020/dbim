@@ -6,7 +6,7 @@ option go_package = ".;grpc";
 
 message PushMsg {
   int32 op = 1;
-  string room = 2;
+  int32 roomid = 2;
   string user = 3;
   bytes msg = 4;
 }
