@@ -7,8 +7,16 @@ import (
 
 type Room struct {
 	next *Channel
-	roomID string
+	roomID int32
 	rLock sync.RWMutex
+}
+
+// NewRoom new a room struct, store channel room info.
+func NewRoom(id int32) (r *Room) {
+	r = new(Room)
+	r.roomID = id
+	r.next = nil
+	return
 }
 
 func (r *Room) Put(ch *Channel) {
@@ -29,4 +37,16 @@ func (r *Room) Push(p *grpc.Package){
 		_ = ch.Push(p)
 	}
 	r.rLock.RUnlock()
+}
+
+func (r *Room) Del(c *Channel) {
+	r.rLock.Lock()
+	if c.Next != nil {
+		c.Next.Prev = c.Prev
+	}
+	if c.Prev != nil {
+		c.Prev.Next = c.Next
+	} else {
+		r.next = c.Next
+	}
 }

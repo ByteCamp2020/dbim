@@ -15,12 +15,14 @@ type Comet struct {
 	routineAmount uint64
 }
 
-func NewComet(cfg *conf.Config) *Comet{
+func NewComet(cfg *conf.Comet) *Comet{
 	c := &Comet {
 		serverID: cfg.Host,
 		routinesNum: 0,
 		routineAmount: cfg.RoutinesNum,
 	}
+	c.routines = make([]chan *grpc.Package, c.routineAmount)
+	c.rooms = make(map[int32]*Room, cfg.RoomNo)
 	for i := uint64(0); i < c.routineAmount; i++ {
 		ch := make(chan *grpc.Package, cfg.RoutineSize)
 		c.routines[i] = ch
@@ -28,9 +30,11 @@ func NewComet(cfg *conf.Config) *Comet{
 	}
 	return c
 }
-func (c *Comet) Put (ch *Channel, roomID int32) {
+
+func (c *Comet) Put(ch *Channel, roomID int32) {
 	c.Room(roomID).Put(ch)
 }
+
 func (c *Comet) Room(roomID int32) (room *Room){
 	room = c.rooms[roomID]
 	return
@@ -39,6 +43,10 @@ func (c *Comet) Room(roomID int32) (room *Room){
 func (c *Comet) Push(p *grpc.Package) {
 	idx := atomic.AddUint64(&c.routinesNum, 1) % c.routineAmount
 	c.routines[idx] <- p
+}
+
+func (c *Comet) PutRoom(r *Room) {
+	c.rooms[r.roomID] = r
 }
 
 func (c *Comet) cometProc(ch chan *grpc.Package) {

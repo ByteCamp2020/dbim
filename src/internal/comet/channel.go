@@ -2,7 +2,6 @@ package comet
 
 import (
 	"bdim/src/api/comet/grpc"
-	"bdim/src/internal/comet/conf"
 	"bufio"
 )
 type Channel struct {
@@ -13,10 +12,10 @@ type Channel struct {
 	Writer bufio.Reader
 }
 
-func NewChannel(cfg *conf.Config) *Channel {
+func NewChannel() *Channel {
 	c := &Channel{
 		Room:   nil,
-		signal: make(chan *grpc.Package, cfg.RoutineSize),
+		signal: make(chan *grpc.Package, 1024),
 		Next:   nil,
 		Prev:   nil,
 		Writer: bufio.Reader{},
