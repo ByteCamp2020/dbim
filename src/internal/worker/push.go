@@ -2,6 +2,7 @@ package worker
 
 import (
 	"context"
+	"fmt"
 
 	comet "bdim/src/api/comet/grpc"
 	pb "bdim/src/api/logic/grpc"
@@ -25,6 +26,7 @@ func (w *Worker) broadcastRoomRawBytes(roomID int32, body []byte) (err error) {
 	}
 	comets := w.cometServers
 	for serverID, c := range comets {
+		fmt.Printf("c.BroadcastRoom(%v) roomID:%d serverID:%s\n", args, roomID, serverID)
 		if err = c.BroadcastRoom(&args); err != nil {
 			log.Errorf("c.BroadcastRoom(%v) roomID:%s serverID:%s error(%v)", args, roomID, serverID, err)
 		}

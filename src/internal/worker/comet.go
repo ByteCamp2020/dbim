@@ -5,11 +5,8 @@ import (
 	"bdim/src/internal/worker/conf"
 	"context"
 	"fmt"
-	"net/url"
 	"sync/atomic"
 	"time"
-
-	"github.com/bilibili/discovery/naming"
 
 	log "github.com/golang/glog"
 	"google.golang.org/grpc"
@@ -68,23 +65,17 @@ type Comet struct {
 }
 
 // NewComet new a comet.
-func NewComet(in *naming.Instance, c *conf.Comet) (*Comet, error) {
+func NewComet(grpcAddr string, c *conf.Comet) (*Comet, error) {
 	cmt := &Comet{
-		serverID:      in.Hostname,
+		serverID:      grpcAddr,
 		roomChan:      make([]chan *comet.Package, c.RoutineSize),
 		routineSize:   uint64(c.RoutineSize),
 	}
-	var grpcAddr string
-	for _, addrs := range in.Addrs {
-		u, err := url.Parse(addrs)
-		if err == nil && u.Scheme == "grpc" {
-			grpcAddr = u.Host
-		}
-	}
 	if grpcAddr == "" {
-		return nil, fmt.Errorf("invalid grpc address:%v", in.Addrs)
+		return nil, fmt.Errorf("invalid grpc address:%v", grpcAddr)
 	}
 	var err error
+
 	if cmt.client, err = newCometClient(grpcAddr); err != nil {
 		return nil, err
 	}

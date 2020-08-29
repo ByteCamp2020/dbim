@@ -2,12 +2,7 @@ package conf
 
 import (
 	xtime "bdim/src/pkg/time"
-	"flag"
-	"os"
 	"time"
-
-	"github.com/BurntSushi/toml"
-	"github.com/bilibili/discovery/naming"
 )
 
 var (
@@ -20,43 +15,37 @@ var (
 	Conf *Config
 )
 
-func init() {
-	var (
-		defHost, _ = os.Hostname()
-	)
-	flag.StringVar(&confPath, "conf", "worker.toml", "default config path")
-	flag.StringVar(&region, "region", os.Getenv("REGION"), "avaliable region. or use REGION env variable, value: sh etc.")
-	flag.StringVar(&zone, "zone", os.Getenv("ZONE"), "avaliable zone. or use ZONE env variable, value: sh001/sh002 etc.")
-	flag.StringVar(&deployEnv, "deploy.env", os.Getenv("DEPLOY_ENV"), "deploy env. or use DEPLOY_ENV env variable, value: dev/fat1/uat/pre/prod etc.")
-	flag.StringVar(&host, "host", defHost, "machine hostname. or use default machine hostname.")
-}
 
 // Init init config.
 func Init() (err error) {
 	Conf = Default()
-	_, err = toml.DecodeFile(confPath, &Conf)
+	
+	//_, err = toml.DecodeFile(confPath, &Conf)
 	return
 }
 
 // Default new a config with specified defualt value.
 func Default() *Config {
 	return &Config{
-		Env:       &Env{Region: region, Zone: zone, DeployEnv: deployEnv, Host: host},
-		Discovery: &naming.Config{Region: region, Zone: zone, Env: deployEnv, Host: host},
+		Discovery: &Discovery{RedisAddr: ":6379"},
 		Comet:     &Comet{RoutineChan: 1024, RoutineSize: 32},
 		Room: &Room{
 			Batch:  20,
 			Signal: xtime.Duration(time.Second),
 			Idle:   xtime.Duration(time.Minute * 15),
 		},
+		Kafka: &Kafka{
+			Topic:   "test",
+			Group:   "test-consumer-group",
+			Brokers: []string{"localhost:9092"},
+		},
 	}
 }
 
 // Config is worker config.
 type Config struct {
-	Env       *Env
 	Kafka     *Kafka
-	Discovery *naming.Config
+	Discovery *Discovery
 	Comet     *Comet
 	Room      *Room
 }
@@ -81,10 +70,6 @@ type Kafka struct {
 	Brokers []string
 }
 
-// Env is env config.
-type Env struct {
-	Region    string
-	Zone      string
-	DeployEnv string
-	Host      string
+type Discovery struct {
+	RedisAddr string
 }
