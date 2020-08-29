@@ -3,6 +3,7 @@ package worker
 import (
 	"bdim/src/pkg/bytes"
 	"errors"
+	"fmt"
 	"time"
 
 	comet "bdim/src/api/comet/grpc"
@@ -88,6 +89,7 @@ func (r *Room) pushproc(batch int, sigTime time.Duration) {
 			}
 		}
 		_ = r.worker.broadcastRoomRawBytes(r.id, buf.Buffer())
+		fmt.Println("Pushing totototo in worker\\room")
 		// TODO use reset buffer
 		// after push to room channel, renew a buffer, let old buffer gc
 		buf = bytes.NewWriterSize(buf.Size())

@@ -1,12 +1,16 @@
 package conf
 
 import (
+	"flag"
 	"os"
 	"time"
 )
 
 var (
-	host, _ = os.Hostname()
+	host string
+	WsAddr string
+	RPCAddr string
+	RedisAddr string
 )
 
 type Config struct {
@@ -14,6 +18,12 @@ type Config struct {
 	Comet *Comet
 	RPCServer *RPCServer
 	Discovery *Discovery
+}
+
+func init() {
+	host, _ = os.Hostname()
+	flag.StringVar(&WsAddr, "conf", "comet.conf", "comet config path")
+
 }
 
 func Init() *Config {

@@ -57,7 +57,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 func main() {
 	flag.Parse()
 	log.SetFlags(0)
-	bind := []string{"localhost:3101", "localhost:8080"}
+	bind := []string{"localhost:3101", "localhost:3101"}
 	//listen(*addr)
 	http.HandleFunc("/echo", echo)
 	http.HandleFunc("/", home)

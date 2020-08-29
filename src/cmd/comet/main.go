@@ -35,6 +35,7 @@ func main() {
 	// register
 	d := discovery.NewDiscovery(cfg.Discovery.RedisAddr)
 	d.RegComet(cfg.RPCServer.Addr)
+	defer d.DelComet(cfg.RPCServer.Addr)
 	ch := make(chan os.Signal, 1)
 	signal.Notify(ch, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)
 	for {

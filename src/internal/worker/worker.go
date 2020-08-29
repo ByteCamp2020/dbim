@@ -6,12 +6,10 @@ import (
 	"context"
 	"fmt"
 	"sync"
-	"time"
 
-	"github.com/bilibili/discovery/naming"
-	"github.com/gogo/protobuf/proto"
-
+	"bdim/src/models/discovery"
 	cluster "github.com/bsm/sarama-cluster"
+	"github.com/gogo/protobuf/proto"
 	log "github.com/golang/glog"
 )
 
@@ -31,8 +29,9 @@ func New(c *conf.Config) *Worker {
 		c:        c,
 		consumer: newKafkaSub(c.Kafka),
 		rooms:    make(map[int32]*Room),
+		cometServers: make(map[string]*Comet),
 	}
-	w.watchComet(c.Discovery)
+	w.initComet(c.Discovery)
 	return w
 }
 
@@ -74,6 +73,7 @@ func (w *Worker) Consume() {
 				log.Errorf("proto.Unmarshal(%v) error(%v)", msg, err)
 				continue
 			}
+			fmt.Println("receive", pushMsg)
 			if err := w.push(context.Background(), pushMsg); err != nil {
 				log.Errorf("w.push(%v) error(%v)", pushMsg, err)
 			}
@@ -82,67 +82,13 @@ func (w *Worker) Consume() {
 	}
 }
 
-func (w *Worker) watchComet(c *naming.Config) {
-	dis := naming.New(c)
-	resolver := dis.Build("bdim.comet")
-	event := resolver.Watch()
-	select {
-	case _, ok := <-event:
-		if !ok {
-			panic("watchComet init failed")
-		}
-		if ins, ok := resolver.Fetch(); ok {
-			if err := w.newAddress(ins.Instances); err != nil {
-				panic(err)
-			}
-			log.Infof("watchComet init newAddress:%+v", ins)
-		}
-	case <-time.After(10 * time.Second):
-		log.Error("watchComet init instances timeout")
+func (w *Worker) initComet(c *conf.Discovery) {
+	dis := discovery.NewDiscovery(c.RedisAddr)
+	cometAddrs := dis.GetCometAddr()
+	fmt.Println(cometAddrs)
+	for _, addr := range cometAddrs {
+		cmt, _ := NewComet(addr, w.c.Comet)
+		w.cometServers[addr] = cmt
 	}
-	go func() {
-		for {
-			if _, ok := <-event; !ok {
-				log.Info("watchComet exit")
-				return
-			}
-			ins, ok := resolver.Fetch()
-			if ok {
-				if err := w.newAddress(ins.Instances); err != nil {
-					log.Errorf("watchComet newAddress(%+v) error(%+v)", ins, err)
-					continue
-				}
-				log.Infof("watchComet change newAddress:%+v", ins)
-			}
-		}
-	}()
 }
 
-func (w *Worker) newAddress(insMap map[string][]*naming.Instance) error {
-	ins := insMap[w.c.Env.Zone]
-	if len(ins) == 0 {
-		return fmt.Errorf("watchComet instance is empty")
-	}
-	comets := map[string]*Comet{}
-	for _, in := range ins {
-		if old, ok := w.cometServers[in.Hostname]; ok {
-			comets[in.Hostname] = old
-			continue
-		}
-		c, err := NewComet(in, w.c.Comet)
-		if err != nil {
-			log.Errorf("watchComet NewComet(%+v) error(%v)", in, err)
-			return err
-		}
-		comets[in.Hostname] = c
-		log.Infof("watchComet AddComet grpc:%+v", in)
-	}
-	for key, old := range w.cometServers {
-		if _, ok := comets[key]; !ok {
-			old.cancel()
-			log.Infof("watchComet DelComet:%s", key)
-		}
-	}
-	w.cometServers = comets
-	return nil
-}

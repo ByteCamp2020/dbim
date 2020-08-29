@@ -5,8 +5,6 @@ import (
 )
 
 var (
-	host string
-
 	// Conf config
 	Conf *Config
 )

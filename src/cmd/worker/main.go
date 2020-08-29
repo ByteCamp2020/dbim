@@ -4,14 +4,10 @@ import (
 	"bdim/src/internal/worker"
 	"bdim/src/internal/worker/conf"
 	"flag"
+	log "github.com/golang/glog"
 	"os"
 	"os/signal"
 	"syscall"
-
-	"github.com/bilibili/discovery/naming"
-
-	resolver "github.com/bilibili/discovery/naming/grpc"
-	log "github.com/golang/glog"
 )
 
 var (
@@ -23,16 +19,11 @@ func main() {
 	if err := conf.Init(); err != nil {
 		panic(err)
 	}
-	log.Infof("bdim-work [version: %s env: %+v] start", ver, conf.Conf.Env)
-
-	// grpc register naming
-	dis := naming.New(conf.Conf.Discovery)
-	resolver.Register(dis)
+	log.Infof("bdim-worker start")
 
 	// worker
 	w := worker.New(conf.Conf)
 	go w.Consume()
-
 	// signal
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)

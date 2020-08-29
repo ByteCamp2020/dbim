@@ -15,7 +15,7 @@ window.addEventListener("load", function(evt) {
         if (ws) {
             return false;
         }
-        ws = new WebSocket("ws://localhost:3101/push?roomid=0");
+        ws = new WebSocket("ws://localhost:3101/push?roomid=1");
         ws.onopen = function(evt) {
             print("OPEN");
         }
