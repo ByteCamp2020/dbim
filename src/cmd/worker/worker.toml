@@ -1,0 +1,8 @@
+# This is a TOML document. Boom
+[discovery]
+    nodes = [""]
+
+[kafka]
+    topic = "bdim-push-topic"
+    group = "bdim-push-group-work"
+    brokers = [""]
