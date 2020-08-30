@@ -25,7 +25,11 @@ func connect(c *conf.MySql) *sql.DB {
 	return db
 }
 
-func (d *Dao) AddMessage(uid string, roomid int, msg string, timestamp int, visible bool) {
+func (d *Dao) Close() error {
+	return d.conn.Close()
+}
+
+func (d *Dao) AddMessage(uid string, roomid int32, msg string, timestamp int32, visible bool) {
 	var vis int8
 	if visible == true {
 		vis = 1

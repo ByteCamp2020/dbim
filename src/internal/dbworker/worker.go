@@ -3,14 +3,12 @@ package dbworker
 import (
 	pb "bdim/src/api/logic/grpc"
 	"bdim/src/internal/dbworker/conf"
-	"context"
 	"fmt"
 
-	"bdim/src/models/discovery"
+	"bdim/src/internal/dbworker/dao"
 	cluster "github.com/bsm/sarama-cluster"
 	"github.com/gogo/protobuf/proto"
 	log "github.com/golang/glog"
-	"bdim/src/internal/dbworker/dao"
 )
 
 // Worker is push Worker.
@@ -43,6 +41,12 @@ func newKafkaSub(c *conf.Kafka) *cluster.Consumer {
 
 // Close close resources.
 func (w *DbWorker) Close() error {
+	if w.dao != nil {
+		err := w.dao.Close()
+		if err != nil {
+			fmt.Println("DbWorker: Close db err", err)
+		}
+	}
 	if w.consumer != nil {
 		return w.consumer.Close()
 	}
@@ -63,25 +67,16 @@ func (w *DbWorker) Consume() {
 			}
 			w.consumer.MarkOffset(msg, "")
 			// process push message
-			pushMsg := new(pb.PushMsg)
-			if err := proto.Unmarshal(msg.Value, pushMsg); err != nil {
-				log.Errorf("proto.Unmarshal(%v) error(%v)", msg, err)
+			mesg := new(pb.Msg)
+			if err := proto.Unmarshal(msg.Value, mesg); err != nil {
+				log.Errorf("proto.Unmarshal(%v) error(%v)", mesg, err)
 				continue
 			}
-			fmt.Println("receive", pushMsg)
-			w.dao.AddMessage(pushMsg.User, pushMsg.Roomid, pushMsg.)
-			log.Infof("Dao:consume: %s/%d/%d\t%s\t%+v", msg.Topic, msg.Partition, msg.Offset, msg.Key, pushMsg)
+			fmt.Println("receive", msg)
+			message := string(mesg.Pm.Msg)
+			w.dao.AddMessage(mesg.Pm.User, mesg.Pm.Roomid, message, mesg.Timestamp, mesg.Visible)
+			log.Infof("Dao:consume: %s/%d/%d\t%s\t%+v", msg.Topic, msg.Partition, msg.Offset, msg.Key, mesg)
 		}
-	}
-}
-
-func (w *Worker) initComet(c *conf.Discovery) {
-	dis := discovery.NewDiscovery(c.RedisAddr)
-	cometAddrs := dis.GetCometAddr()
-	fmt.Println(cometAddrs)
-	for _, addr := range cometAddrs {
-		cmt, _ := NewComet(addr, w.c.Comet)
-		w.cometServers[addr] = cmt
 	}
 }
 
