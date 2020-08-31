@@ -67,9 +67,6 @@ func (s *Server) push(c *gin.Context) {
 		return
 	}
 	if s.logic.DFA.CheckSentence(string(msg)) == false {
-		return
-	}
-	{
 		errors(c, RequestErr, err.Error())
 		return
 	}
