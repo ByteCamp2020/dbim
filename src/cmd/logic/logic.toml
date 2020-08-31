@@ -1,5 +1,5 @@
 [HTTPServer]
-Addr = "localhost:2333"
+    Addr = "localhost:2333"
 [Kafka]
-Topic = "test"
-Brokers = ["localhost:9092"]
+    Topic = "bdim"
+    Brokers = ["localhost:9092"]

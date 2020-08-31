@@ -9,7 +9,7 @@ import (
 
 	"bdim/src/models/discovery"
 	cluster "github.com/bsm/sarama-cluster"
-	"github.com/gogo/protobuf/proto"
+	"google.golang.org/protobuf/proto"
 	log "github.com/golang/glog"
 )
 
@@ -56,6 +56,7 @@ func (w *Worker) Close() error {
 
 // Consume messages, watch signals
 func (w *Worker) Consume() {
+	fmt.Println("Consuming")
 	for {
 		select {
 		case err := <-w.consumer.Errors():
@@ -69,6 +70,7 @@ func (w *Worker) Consume() {
 			w.consumer.MarkOffset(msg, "")
 			// process push message
 			mesg := new(pb.Msg)
+			fmt.Println("Receive!")
 			if err := proto.Unmarshal(msg.Value, mesg); err != nil {
 				log.Errorf("proto.Unmarshal(%v) error(%v)", msg, err)
 				continue

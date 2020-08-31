@@ -3,6 +3,7 @@ package conf
 import (
 	xtime "bdim/src/pkg/time"
 	"flag"
+	"fmt"
 	"github.com/BurntSushi/toml"
 	"os"
 	"time"
@@ -28,6 +29,7 @@ func Init() (err error) {
 	Conf = Default()
 	
 	_, err = toml.DecodeFile(confPath, &Conf)
+	fmt.Println(Conf.Kafka)
 	return
 }
 
@@ -43,7 +45,6 @@ func Default() *Config {
 		},
 		Kafka: &Kafka{
 			Topic:   "test",
-			Group:   "test-consumer-group",
 			Brokers: []string{"localhost:9092"},
 		},
 	}

@@ -5,6 +5,6 @@ Hostname = ""
 Port = ""
 Database = ""
 [Kafka]
-Topic = ""
-Group = ""
-Brokers = [""]
+Topic = "bdim"
+Group = "bdim-dbworker"
+Brokers = ["localhost:9092"]

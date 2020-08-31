@@ -3,6 +3,7 @@ package main
 import (
 	"bdim/src/internal/dbworker"
 	"bdim/src/internal/dbworker/conf"
+	"flag"
 	log "github.com/golang/glog"
 	"os"
 	"os/signal"
@@ -10,6 +11,10 @@ import (
 )
 
 func main() {
+	flag.Parse()
+	if err := conf.Init(); err != nil {
+		panic(err)
+	}
 	c := conf.Conf
 	log.Infof("DbWorker: Starting dbworker, cfg:%v", c)
 	dbWorker := dbworker.New(c)

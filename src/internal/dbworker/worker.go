@@ -7,7 +7,7 @@ import (
 
 	"bdim/src/internal/dbworker/dao"
 	cluster "github.com/bsm/sarama-cluster"
-	"github.com/gogo/protobuf/proto"
+	"google.golang.org/protobuf/proto"
 	log "github.com/golang/glog"
 )
 

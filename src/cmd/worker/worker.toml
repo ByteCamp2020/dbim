@@ -3,6 +3,6 @@
     RedisAddr = ":6379"
 
 [Kafka]
-    Topic = "bdim-push-topic"
-    Group = "bdim-push-group-work"
+    Topic = "bdim"
+    Group = "bdim-worker"
     Brokers = ["localhost:9092"]

@@ -1,11 +1,10 @@
 package logic
 
 import (
-	"context"
-
 	pb "bdim/src/api/logic/grpc"
 	"bdim/src/internal/logic/conf"
-	"github.com/gogo/protobuf/proto"
+	"context"
+	"google.golang.org/protobuf/proto"
 	log "github.com/golang/glog"
 	kafka "gopkg.in/Shopify/sarama.v1"
 )
@@ -54,7 +53,6 @@ func (l *Logic) PushRoom(c context.Context, op int32, room int32, user string, t
 		Timestamp: timestamp,
 		Visible:   true,
 	}
-
 	b, err := proto.Marshal(Msg)
 	if err != nil {
 		return

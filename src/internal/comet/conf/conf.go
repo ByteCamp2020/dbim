@@ -2,6 +2,7 @@ package conf
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"time"
 	"github.com/BurntSushi/toml"
@@ -12,7 +13,7 @@ var (
 	host string
 )
 
-type tomlParas struct {
+type TomlParas struct {
 	WsAddr string
 	RPCAddr string
 	RedisAddr string
@@ -56,10 +57,12 @@ func Default() *Config{
 
 func Init() *Config {
 	cfg := Default()
-	var tp tomlParas
+	fmt.Println(confPath)
+	var tp TomlParas
 	if _, err := toml.DecodeFile(confPath, &tp); err != nil {
-
+		fmt.Println(err)
 	}
+	fmt.Println(tp)
 	cfg.WebSocket.WsAddr = tp.WsAddr
 	cfg.RPCServer.Addr = tp.RPCAddr
 	cfg.Discovery.RedisAddr = tp.RedisAddr

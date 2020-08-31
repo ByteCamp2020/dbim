@@ -1,7 +1,10 @@
 package conf
 
 import (
+	"flag"
+	"fmt"
 	"github.com/BurntSushi/toml"
+	"os"
 )
 
 var (
@@ -10,13 +13,17 @@ var (
 	host string
 )
 
-
+func init() {
+	host, _ = os.Hostname()
+	flag.StringVar(&confPath, "conf", "comet.conf", "comet config path")
+}
 
 // Init init config.
 func Init() (err error) {
 	Conf = Default()
 
 	_, err = toml.DecodeFile(confPath, &Conf)
+	fmt.Println(Conf)
 	return
 }
 
