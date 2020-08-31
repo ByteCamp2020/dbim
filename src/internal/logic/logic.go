@@ -14,6 +14,7 @@ import (
 type Logic struct {
 	c        *conf.Config
 	kafkaPub kafka.SyncProducer
+	DFA      *DFAUtil
 }
 
 // New init
@@ -21,6 +22,7 @@ func New(c *conf.Config) (l *Logic) {
 	l = &Logic{
 		c:        c,
 		kafkaPub: newKafkaPub(c.Kafka),
+		DFA:      NewDFAUtil(c.WordList),
 	}
 	return l
 }

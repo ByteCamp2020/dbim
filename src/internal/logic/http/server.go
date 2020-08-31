@@ -66,6 +66,13 @@ func (s *Server) push(c *gin.Context) {
 		errors(c, RequestErr, err.Error())
 		return
 	}
+	if s.logic.DFA.CheckSentence(string(msg)) == false {
+		return
+	}
+	{
+		errors(c, RequestErr, err.Error())
+		return
+	}
 	timestamp := int32(time.Now().Unix())
 	if err = s.logic.PushRoom(c, arg.Op, arg.Room, arg.User, timestamp, msg); err != nil {
 		errors(c, ServerErr, err.Error())
