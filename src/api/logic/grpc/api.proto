@@ -4,6 +4,12 @@ package bdim.logic;
 
 option go_package = ".;grpc";
 
+message Msg {
+    PushMsg pm = 1;
+    int32 timestamp = 2;
+    bool visible = 3;
+}
+
 message PushMsg {
   int32 op = 1;
   int32 roomid = 2;

@@ -4,14 +4,19 @@ import (
 	"flag"
 	"os"
 	"time"
+	"github.com/BurntSushi/toml"
 )
 
 var (
+	confPath string
 	host string
+)
+
+type tomlParas struct {
 	WsAddr string
 	RPCAddr string
 	RedisAddr string
-)
+}
 
 type Config struct {
 	WebSocket *WebSocket
@@ -22,19 +27,15 @@ type Config struct {
 
 func init() {
 	host, _ = os.Hostname()
-	flag.StringVar(&WsAddr, "conf", "comet.conf", "comet config path")
-
+	flag.StringVar(&confPath, "conf", "comet.conf", "comet config path")
 }
 
-func Init() *Config {
+func Default() *Config{
 	return &Config{
-
 		WebSocket: &WebSocket{
-			WsAddr: ":3101",
 			ClientNo: int(1e7),
 		},
 		RPCServer: &RPCServer{
-			Addr:              ":3109",
 			Timeout:           time.Second,
 			IdleTimeout:       time.Second * 60,
 			MaxLifeTime:       time.Hour * 2,
@@ -43,7 +44,6 @@ func Init() *Config {
 			KeepAliveTimeout:  time.Second * 20,
 		},
 		Discovery: &Discovery{
-			RedisAddr: ":6379",
 		},
 		Comet: &Comet{
 			RoutinesNum: 8,
@@ -52,6 +52,18 @@ func Init() *Config {
 			Host: host,
 		},
 	}
+}
+
+func Init() *Config {
+	cfg := Default()
+	var tp tomlParas
+	if _, err := toml.DecodeFile(confPath, &tp); err != nil {
+
+	}
+	cfg.WebSocket.WsAddr = tp.WsAddr
+	cfg.RPCServer.Addr = tp.RPCAddr
+	cfg.Discovery.RedisAddr = tp.RedisAddr
+	return cfg
 }
 // redis addr
 // grpc addr

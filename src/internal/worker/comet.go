@@ -38,7 +38,6 @@ func newCometClient(addr string) (comet.CometClient, error) {
 			grpc.WithInitialConnWindowSize(grpcInitialConnWindowSize),
 			grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(grpcMaxCallMsgSize)),
 			grpc.WithDefaultCallOptions(grpc.MaxCallSendMsgSize(grpcMaxSendMsgSize)),
-			grpc.WithBackoffMaxDelay(grpcBackoffMaxDelay),
 			grpc.WithKeepaliveParams(keepalive.ClientParameters{
 				Time:                grpcKeepAliveTime,
 				Timeout:             grpcKeepAliveTimeout,
@@ -54,11 +53,11 @@ func newCometClient(addr string) (comet.CometClient, error) {
 
 // Comet is a comet.
 type Comet struct {
-	serverID      string
-	client        comet.CometClient
-	roomChan      []chan *comet.Package
-	roomChanNum   uint64
-	routineSize   uint64
+	serverID    string
+	client      comet.CometClient
+	roomChan    []chan *comet.Package
+	roomChanNum uint64
+	routineSize uint64
 
 	ctx    context.Context
 	cancel context.CancelFunc
@@ -67,9 +66,9 @@ type Comet struct {
 // NewComet new a comet.
 func NewComet(grpcAddr string, c *conf.Comet) (*Comet, error) {
 	cmt := &Comet{
-		serverID:      grpcAddr,
-		roomChan:      make([]chan *comet.Package, c.RoutineSize),
-		routineSize:   uint64(c.RoutineSize),
+		serverID:    grpcAddr,
+		roomChan:    make([]chan *comet.Package, c.RoutineSize),
+		routineSize: uint64(c.RoutineSize),
 	}
 	if grpcAddr == "" {
 		return nil, fmt.Errorf("invalid grpc address:%v", grpcAddr)
@@ -96,12 +95,12 @@ func (c *Comet) BroadcastRoom(arg *comet.Package) (err error) {
 }
 
 func (c *Comet) process(roomChan chan *comet.Package) {
-	for  {
+	for {
 		roomArg := <-roomChan
 		_, err := c.client.Push(context.Background(), &comet.Package{
-			Op: roomArg.Op,
+			Op:     roomArg.Op,
 			Roomid: roomArg.Roomid,
-			Body:  roomArg.Body,
+			Body:   roomArg.Body,
 		})
 		if err != nil {
 			log.Errorf("c.client.BroadcastRoom(%s, reply) serverId:%s error(%v)", roomArg, c.serverID, err)

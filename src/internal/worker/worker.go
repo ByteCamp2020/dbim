@@ -68,11 +68,12 @@ func (w *Worker) Consume() {
 			}
 			w.consumer.MarkOffset(msg, "")
 			// process push message
-			pushMsg := new(pb.PushMsg)
-			if err := proto.Unmarshal(msg.Value, pushMsg); err != nil {
+			mesg := new(pb.Msg)
+			if err := proto.Unmarshal(msg.Value, mesg); err != nil {
 				log.Errorf("proto.Unmarshal(%v) error(%v)", msg, err)
 				continue
 			}
+			pushMsg := mesg.Pm
 			fmt.Println("receive", pushMsg)
 			if err := w.push(context.Background(), pushMsg); err != nil {
 				log.Errorf("w.push(%v) error(%v)", pushMsg, err)

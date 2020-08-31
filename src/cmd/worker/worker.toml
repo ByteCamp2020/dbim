@@ -1,8 +1,8 @@
 # This is a TOML document. Boom
-[discovery]
-    nodes = [""]
+[Discovery]
+    RedisAddr = ":6379"
 
-[kafka]
-    topic = "bdim-push-topic"
-    group = "bdim-push-group-work"
-    brokers = [""]
+[Kafka]
+    Topic = "bdim-push-topic"
+    Group = "bdim-push-group-work"
+    Brokers = ["localhost:9092"]
