@@ -19,7 +19,16 @@ type Server struct {
 // New new a http server.
 func New(c *conf.HTTPServer, l *logic.Logic) *Server {
 	engine := gin.New()
-	engine.Use(MWHandleErrors())
+
+	if c.IsLimit == true {
+		limiter, err := logic.NewLimiter(*c)
+		if err != nil {
+			panic(err)
+		}
+		engine.Use(MWHandleErrors(), RateMiddleware(limiter))
+	} else {
+		engine.Use(MWHandleErrors())
+	}
 	go func() {
 		if err := engine.Run(c.Addr); err != nil {
 			panic(err)

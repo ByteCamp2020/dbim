@@ -3,7 +3,6 @@ package conf
 import (
 	"flag"
 	"fmt"
-	"github.com/BurntSushi/toml"
 	"os"
 	"strings"
 	"time"
@@ -24,7 +23,7 @@ func init() {
 // Init init config.
 func Init() (err error) {
 	Conf = Default()
-	_, err = toml.DecodeFile(confPath, &Conf)
+	//_, err = toml.DecodeFile(confPath, &Conf)
 	fmt.Println(Conf.Kafka)
 	return
 }
@@ -61,6 +60,10 @@ type HTTPServer struct {
 	Addr         string
 	ReadTimeout  time.Duration
 	WriteTimeout time.Duration
+	IsLimit      bool
+	RedisAddr    string
+	Count        int64
+	Dur          time.Duration
 }
 
 type Kafka struct {

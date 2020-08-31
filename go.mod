@@ -9,7 +9,7 @@ require (
 	github.com/bsm/sarama-cluster v2.1.15+incompatible
 	github.com/garyburd/redigo v1.6.2
 	github.com/gin-gonic/gin v1.6.3
-	github.com/gogo/protobuf v1.3.1
+	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
 	github.com/golang/protobuf v1.4.2
 	github.com/gorilla/websocket v1.4.2

@@ -1,11 +1,12 @@
 package http
 
 import (
+	"bdim/src/internal/logic"
 	"fmt"
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/joomcode/errorx"
+	"log"
+	"net/http"
 )
 
 var (
@@ -53,5 +54,19 @@ func MWHandleErrors() gin.HandlerFunc {
 			Code:     errorx.GetTypeName(innerErr),
 			FullText: fmt.Sprintf("%+v", innerErr),
 		})
+	}
+}
+
+func RateMiddleware(limiter *logic.Limiter) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// 2 times in 1 second
+		if !limiter.Allow(c.ClientIP(), limiter.Count, limiter.Dur) {
+			c.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{
+				"error": "too many requests",
+			})
+			log.Println("too many requests")
+			return
+		}
+		c.Next()
 	}
 }

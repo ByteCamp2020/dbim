@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"bdim/src/internal/logic"
 	"bdim/src/internal/logic/conf"
@@ -26,6 +27,12 @@ func main() {
 
 	// logic
 	srv := logic.New(conf.Conf)
+	conf.Conf.HTTPServer.IsLimit = true
+	conf.Conf.HTTPServer.RedisAddr = "redis://localhost:6379"
+	// 2 times in one second
+	conf.Conf.HTTPServer.Count = 2
+	conf.Conf.HTTPServer.Dur = 1 * time.Second
+
 	httpSrv := http.New(conf.Conf.HTTPServer, srv)
 
 	// signal
