@@ -42,14 +42,20 @@ func (l *Logic) Close() {
 
 }
 
-func (l *Logic) PushRoom(c context.Context, op int32, room int32, user string, msg []byte) (err error) {
+func (l *Logic) PushRoom(c context.Context, op int32, room int32, user string, timestamp int32, msg []byte) (err error) {
 	pushMsg := &pb.PushMsg{
 		Op:   op,
 		Roomid: room,
 		User: user,
 		Msg:  msg,
 	}
-	b, err := proto.Marshal(pushMsg)
+	Msg := &pb.Msg{
+		Pm:        pushMsg,
+		Timestamp: timestamp,
+		Visible:   true,
+	}
+
+	b, err := proto.Marshal(Msg)
 	if err != nil {
 		return
 	}

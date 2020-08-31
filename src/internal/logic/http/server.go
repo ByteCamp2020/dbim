@@ -5,6 +5,7 @@ import (
 	"bdim/src/internal/logic/conf"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -65,7 +66,8 @@ func (s *Server) push(c *gin.Context) {
 		errors(c, RequestErr, err.Error())
 		return
 	}
-	if err = s.logic.PushRoom(c, arg.Op, arg.Room, arg.User, msg); err != nil {
+	timestamp := int32(time.Now().Unix())
+	if err = s.logic.PushRoom(c, arg.Op, arg.Room, arg.User, timestamp, msg); err != nil {
 		errors(c, ServerErr, err.Error())
 		return
 	}
