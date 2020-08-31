@@ -19,9 +19,9 @@ func New(cfg *conf.RPCServer, c *comet.Comet) *grpc.Server {
 	keepParams := grpc.KeepaliveParams(keepalive.ServerParameters{
 		MaxConnectionIdle:     cfg.IdleTimeout,
 		MaxConnectionAgeGrace: cfg.ForceCloseWait,
-		Time:             cfg.KeepAliveInterval,
-		Timeout:          cfg.KeepAliveTimeout,
-		MaxConnectionAge: cfg.MaxLifeTime,
+		Time:                  cfg.KeepAliveInterval,
+		Timeout:               cfg.KeepAliveTimeout,
+		MaxConnectionAge:      cfg.MaxLifeTime,
 	})
 	lis, err := net.Listen("tcp", fmt.Sprintf("%s", cfg.Addr))
 	if err != nil {
@@ -37,13 +37,13 @@ func New(cfg *conf.RPCServer, c *comet.Comet) *grpc.Server {
 	return grpcServer
 }
 
-func (s *server) Push(ctx context.Context, p *pb.Package) (*pb.PushReply, error){
+func (s *server) Push(ctx context.Context, p *pb.Package) (*pb.PushReply, error) {
 	s.c.Push(p)
 	fmt.Println("Receive message", p.Body)
 	resp := &pb.PushReply{}
 	return resp, nil
 }
 
-func (s *server) Close () {
+func (s *server) Close() {
 
 }

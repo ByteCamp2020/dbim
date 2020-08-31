@@ -2,25 +2,25 @@ package conf
 
 import (
 	"flag"
+	"github.com/BurntSushi/toml"
 	"os"
 	"time"
-	"github.com/BurntSushi/toml"
 )
 
 var (
 	confPath string
-	host string
+	host     string
 )
 
 type tomlParas struct {
-	WsAddr string
-	RPCAddr string
+	WsAddr    string
+	RPCAddr   string
 	RedisAddr string
 }
 
 type Config struct {
 	WebSocket *WebSocket
-	Comet *Comet
+	Comet     *Comet
 	RPCServer *RPCServer
 	Discovery *Discovery
 }
@@ -30,7 +30,7 @@ func init() {
 	flag.StringVar(&confPath, "conf", "comet.conf", "comet config path")
 }
 
-func Default() *Config{
+func Default() *Config {
 	return &Config{
 		WebSocket: &WebSocket{
 			ClientNo: int(1e7),
@@ -43,13 +43,12 @@ func Default() *Config{
 			KeepAliveInterval: time.Second * 60,
 			KeepAliveTimeout:  time.Second * 20,
 		},
-		Discovery: &Discovery{
-		},
+		Discovery: &Discovery{},
 		Comet: &Comet{
 			RoutinesNum: 8,
 			RoutineSize: 1024,
 			RoomNo:      1024,
-			Host: host,
+			Host:        host,
 		},
 	}
 }
@@ -65,6 +64,7 @@ func Init() *Config {
 	cfg.Discovery.RedisAddr = tp.RedisAddr
 	return cfg
 }
+
 // redis addr
 // grpc addr
 // port
@@ -81,8 +81,8 @@ type RPCServer struct {
 type Comet struct {
 	RoutinesNum uint64
 	RoutineSize uint64
-	RoomNo int
-	Host string
+	RoomNo      int
+	Host        string
 }
 
 type Discovery struct {
@@ -90,6 +90,6 @@ type Discovery struct {
 }
 
 type WebSocket struct {
-	WsAddr string
+	WsAddr   string
 	ClientNo int
 }

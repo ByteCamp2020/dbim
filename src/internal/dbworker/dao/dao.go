@@ -1,8 +1,9 @@
 package dao
 
-import ("database/sql"
-		"bdim/src/internal/dbworker/conf"
-		"fmt"
+import (
+	"bdim/src/internal/dbworker/conf"
+	"database/sql"
+	"fmt"
 )
 
 type Dao struct {
@@ -10,7 +11,7 @@ type Dao struct {
 }
 
 func New(c *conf.MySql) *Dao {
-	dao := &Dao {
+	dao := &Dao{
 		conn: connect(c),
 	}
 	return dao

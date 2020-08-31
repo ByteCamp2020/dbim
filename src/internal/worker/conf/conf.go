@@ -26,7 +26,7 @@ func init() {
 // Init init config.
 func Init() (err error) {
 	Conf = Default()
-	
+
 	_, err = toml.DecodeFile(confPath, &Conf)
 	return
 }

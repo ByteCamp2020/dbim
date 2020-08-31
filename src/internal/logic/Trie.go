@@ -6,7 +6,7 @@ const (
 
 type trieNode struct {
 	isEndOfWord bool
-	children map[rune]*trieNode
+	children    map[rune]*trieNode
 }
 
 func newtrieNode() *trieNode {

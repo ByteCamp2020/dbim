@@ -20,19 +20,19 @@ var (
 
 // Room room.
 type Room struct {
-	c     *conf.Room
-	worker   *Worker
-	id    int32
-	pack chan *comet.Package
+	c      *conf.Room
+	worker *Worker
+	id     int32
+	pack   chan *comet.Package
 }
 
 // NewRoom new a room struct, store channel room info.
 func NewRoom(worker *Worker, id int32, c *conf.Room) (r *Room) {
 	r = &Room{
-		c:     c,
-		id:    id,
-		worker:   worker,
-		pack: make(chan *comet.Package, c.Batch*2),
+		c:      c,
+		id:     id,
+		worker: worker,
+		pack:   make(chan *comet.Package, c.Batch*2),
 	}
 	go r.pushproc(c.Batch, time.Duration(c.Signal))
 	return
@@ -104,7 +104,6 @@ func (r *Room) pushproc(batch int, sigTime time.Duration) {
 	log.Infof("room:%s goroutine exit", r.id)
 }
 
-
 func (w *Worker) delRoom(roomID int32) {
 	w.roomsMutex.Lock()
 	delete(w.rooms, roomID)
@@ -126,4 +125,3 @@ func (w *Worker) getRoom(roomID int32) *Room {
 	}
 	return room
 }
-

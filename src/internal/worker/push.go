@@ -20,9 +20,9 @@ func (w *Worker) push(ctx context.Context, pushMsg *pb.PushMsg) (err error) {
 // broadcastRoomRawBytes broadcast aggregation messages to room.
 func (w *Worker) broadcastRoomRawBytes(roomID int32, body []byte) (err error) {
 	args := comet.Package{
-		Op: opRaw,
+		Op:     opRaw,
 		Roomid: roomID,
-		Body: body,
+		Body:   body,
 	}
 	comets := w.cometServers
 	for serverID, c := range comets {
@@ -34,4 +34,3 @@ func (w *Worker) broadcastRoomRawBytes(roomID int32, body []byte) (err error) {
 	log.Infof("broadcastRoom comets:%d", len(comets))
 	return
 }
-
