@@ -10,4 +10,7 @@ SHELL    := /usr/bin/env bash
 
 fmt:
 	$(CGOENV) go fmt ./...
-
+build:
+	$(CGOENV) go build -o bin/logic ./src/cmd/logic/main.go
+	$(CGOENV) go build -o bin/worker ./src/cmd/worker/main.go
+	$(CGOENV) go build -o bin/comet ./src/cmd/comet/main.go
