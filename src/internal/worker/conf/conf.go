@@ -2,6 +2,9 @@ package conf
 
 import (
 	xtime "bdim/src/pkg/time"
+	"flag"
+	"github.com/BurntSushi/toml"
+	"os"
 	"time"
 )
 
@@ -15,12 +18,16 @@ var (
 	Conf *Config
 )
 
+func init() {
+	host, _ = os.Hostname()
+	flag.StringVar(&confPath, "conf", "comet.conf", "comet config path")
+}
 
 // Init init config.
 func Init() (err error) {
 	Conf = Default()
 	
-	//_, err = toml.DecodeFile(confPath, &Conf)
+	_, err = toml.DecodeFile(confPath, &Conf)
 	return
 }
 

@@ -1,14 +1,22 @@
 package conf
 
+import (
+	"github.com/BurntSushi/toml"
+)
+
 var (
 	Conf *Config
+	confPath string
+	host string
 )
+
+
 
 // Init init config.
 func Init() (err error) {
 	Conf = Default()
 
-	//_, err = toml.DecodeFile(confPath, &Conf)
+	_, err = toml.DecodeFile(confPath, &Conf)
 	return
 }
 

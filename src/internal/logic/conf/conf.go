@@ -1,15 +1,21 @@
 package conf
 
 import (
+	"flag"
+	"os"
 	"time"
 )
 
 var (
 	// Conf config
 	Conf *Config
+	host string
+	confPath string
 )
 
 func init() {
+	host, _ = os.Hostname()
+	flag.StringVar(&confPath, "conf", "comet.conf", "comet config path")
 }
 
 // Init init config.
