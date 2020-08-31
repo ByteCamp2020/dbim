@@ -57,7 +57,7 @@ func (l *Logic) PushRoom(c context.Context, op int32, room int32, user string, t
 	}
 	b, err := proto.Marshal(Msg)
 	if err != nil {
-		return
+		return err
 	}
 	m := &kafka.ProducerMessage{
 		Key:   kafka.StringEncoder(room),
@@ -66,6 +66,7 @@ func (l *Logic) PushRoom(c context.Context, op int32, room int32, user string, t
 	}
 	if _, _, err = l.kafkaPub.SendMessage(m); err != nil {
 		log.Errorf("PushMsg.send(broadcast_room pushMsg:%v) error(%v)", pushMsg, err)
+		return err
 	}
 	return
 }
