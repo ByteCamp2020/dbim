@@ -46,7 +46,7 @@ func (s *Server) Close() {
 
 type Arg struct {
 	Op   int32  `form:"operation" binding:"required"`
-	Room int32 `form:"room" binding:"required"`
+	Room int32  `form:"room" binding:"required"`
 	User string `form:"user" binding:"required"`
 }
 
@@ -63,6 +63,10 @@ func (s *Server) push(c *gin.Context) {
 	// read message
 	msg, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
+		errors(c, RequestErr, err.Error())
+		return
+	}
+	if s.logic.DFA.CheckSentence(string(msg)) == false {
 		errors(c, RequestErr, err.Error())
 		return
 	}

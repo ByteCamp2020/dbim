@@ -26,9 +26,9 @@ type Worker struct {
 // New new a push Worker.
 func New(c *conf.Config) *Worker {
 	w := &Worker{
-		c:        c,
-		consumer: newKafkaSub(c.Kafka),
-		rooms:    make(map[int32]*Room),
+		c:            c,
+		consumer:     newKafkaSub(c.Kafka),
+		rooms:        make(map[int32]*Room),
 		cometServers: make(map[string]*Comet),
 	}
 	w.initComet(c.Discovery)
@@ -94,4 +94,3 @@ func (w *Worker) initComet(c *conf.Discovery) {
 		w.cometServers[addr] = cmt
 	}
 }
-

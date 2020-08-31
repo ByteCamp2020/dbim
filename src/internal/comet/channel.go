@@ -4,11 +4,12 @@ import (
 	"bdim/src/api/comet/grpc"
 	"bufio"
 )
+
 type Channel struct {
-	Room *Room
+	Room   *Room
 	signal chan *grpc.Package
-	Next *Channel
-	Prev *Channel
+	Next   *Channel
+	Prev   *Channel
 	Writer bufio.Reader
 }
 
@@ -24,7 +25,7 @@ func NewChannel() *Channel {
 	return c
 }
 
-func (c *Channel) Push(p *grpc.Package) (err error){
+func (c *Channel) Push(p *grpc.Package) (err error) {
 	select {
 	case c.signal <- p:
 	default:
@@ -33,5 +34,5 @@ func (c *Channel) Push(p *grpc.Package) (err error){
 }
 
 func (c *Channel) Listen() *grpc.Package {
-	return <- c.signal
+	return <-c.signal
 }

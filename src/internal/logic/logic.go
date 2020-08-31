@@ -13,6 +13,7 @@ import (
 type Logic struct {
 	c        *conf.Config
 	kafkaPub kafka.SyncProducer
+	DFA      *DFAUtil
 }
 
 // New init
@@ -20,6 +21,7 @@ func New(c *conf.Config) (l *Logic) {
 	l = &Logic{
 		c:        c,
 		kafkaPub: newKafkaPub(c.Kafka),
+		DFA:      NewDFAUtil(c.WordList),
 	}
 	return l
 }
@@ -43,10 +45,10 @@ func (l *Logic) Close() {
 
 func (l *Logic) PushRoom(c context.Context, op int32, room int32, user string, timestamp int32, msg []byte) (err error) {
 	pushMsg := &pb.PushMsg{
-		Op:   op,
+		Op:     op,
 		Roomid: room,
-		User: user,
-		Msg:  msg,
+		User:   user,
+		Msg:    msg,
 	}
 	Msg := &pb.Msg{
 		Pm:        pushMsg,

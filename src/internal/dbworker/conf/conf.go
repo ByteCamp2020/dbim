@@ -8,9 +8,9 @@ import (
 )
 
 var (
-	Conf *Config
+	Conf     *Config
 	confPath string
-	host string
+	host     string
 )
 
 func init() {
@@ -31,10 +31,10 @@ func Init() (err error) {
 func Default() *Config {
 	return &Config{
 		MySql: &MySql{
-			Username:  "",
-			Password:  "",
-			Hostname:  "",
-			Port:      "",
+			Username: "",
+			Password: "",
+			Hostname: "",
+			Port:     "",
 			Database: "",
 		},
 		Kafka: &Kafka{
@@ -54,10 +54,10 @@ type MySql struct {
 	Username string
 	Password string
 	Hostname string
-	Port string
+	Port     string
 	Database string
-
 }
+
 // Kafka is kafka config.
 type Kafka struct {
 	Topic   string

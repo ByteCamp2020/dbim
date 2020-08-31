@@ -4,6 +4,7 @@ import (
 	"bdim/src/pkg/bytes"
 	"bdim/src/pkg/encoding/binary"
 )
+
 const (
 	// MaxBodySize max package body size
 	MaxBodySize = int32(1 << 12)
@@ -25,7 +26,6 @@ const (
 	_seqOffset    = _opOffset + _opSize
 	_heartOffset  = _seqOffset
 )
-
 
 // WriteTo write a package to bytes writer.
 func (p *Package) WriteTo(b *bytes.Writer) {

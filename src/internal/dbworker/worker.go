@@ -13,9 +13,9 @@ import (
 
 // Worker is push Worker.
 type DbWorker struct {
-	c            *conf.Config
-	consumer     *cluster.Consumer
-	dao *dao.Dao
+	c        *conf.Config
+	consumer *cluster.Consumer
+	dao      *dao.Dao
 }
 
 // New new a push Worker.
@@ -23,7 +23,7 @@ func New(c *conf.Config) *DbWorker {
 	w := &DbWorker{
 		c:        c,
 		consumer: newKafkaSub(c.Kafka),
-		dao: dao.New(c.MySql),
+		dao:      dao.New(c.MySql),
 	}
 	return w
 }
@@ -79,4 +79,3 @@ func (w *DbWorker) Consume() {
 		}
 	}
 }
-

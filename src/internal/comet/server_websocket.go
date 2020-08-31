@@ -14,19 +14,19 @@ var (
 )
 
 type ClientManager struct {
-	addr string
-	Clients map[*Client]bool
-	comet *Comet
-	cfg *conf.WebSocket
+	addr      string
+	Clients   map[*Client]bool
+	comet     *Comet
+	cfg       *conf.WebSocket
 	clientCnt int
 }
 type Client struct {
 	channel *Channel
-	conn *websocket.Conn
+	conn    *websocket.Conn
 }
 
 type Register struct {
-	conn *websocket.Conn
+	conn   *websocket.Conn
 	roomID int32
 }
 
@@ -41,16 +41,16 @@ func NewClientManage(cfg *conf.WebSocket, comet *Comet) *ClientManager {
 	return cm
 }
 
-func NewClient(conn *websocket.Conn, c *Channel, roomID int32) *Client{
+func NewClient(conn *websocket.Conn, c *Channel, roomID int32) *Client {
 	client := &Client{
 		channel: c,
-		conn: conn,
+		conn:    conn,
 	}
 	go client.pushProc()
 	return client
 }
 
-func (c *Client) pushProc (){
+func (c *Client) pushProc() {
 	for {
 		info := c.channel.Listen()
 		fmt.Println(info)
@@ -117,8 +117,8 @@ func serveHTTP(w http.ResponseWriter, r *http.Request) {
 		glog.Error("Upgrade fail", err)
 	}
 	register := &Register{
-		conn:    conn,
-		roomID:  int32(roomid),
+		conn:   conn,
+		roomID: int32(roomid),
 	}
 	registerCh <- register
 }

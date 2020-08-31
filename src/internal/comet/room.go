@@ -6,9 +6,9 @@ import (
 )
 
 type Room struct {
-	next *Channel
+	next   *Channel
 	roomID int32
-	rLock sync.RWMutex
+	rLock  sync.RWMutex
 }
 
 // NewRoom new a room struct, store channel room info.
@@ -31,7 +31,7 @@ func (r *Room) Put(ch *Channel) {
 	r.rLock.Unlock()
 }
 
-func (r *Room) Push(p *grpc.Package){
+func (r *Room) Push(p *grpc.Package) {
 	r.rLock.RLock()
 	for ch := r.next; ch != nil; ch = ch.Next {
 		_ = ch.Push(p)

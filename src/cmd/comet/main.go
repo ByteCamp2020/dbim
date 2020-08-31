@@ -12,6 +12,7 @@ import (
 	"runtime"
 	"syscall"
 )
+
 func main() {
 	flag.Parse()
 	runtime.GOMAXPROCS(runtime.NumCPU())

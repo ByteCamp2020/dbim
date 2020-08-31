@@ -20,10 +20,9 @@ func main() {
 	dbWorker := dbworker.New(c)
 	go dbWorker.Consume()
 
-
 	wait := make(chan os.Signal, 1)
 	signal.Notify(wait, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM)
-	<- wait
+	<-wait
 
 	err := dbWorker.Close()
 	if err != nil {
