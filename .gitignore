@@ -4,6 +4,7 @@
 *.iml
 *.iws
 .vscode/
+.DS_Store
 
 # bin
 *.exe
