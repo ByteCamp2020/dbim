@@ -24,7 +24,20 @@ window.addEventListener("load", function(evt) {
             ws = null;
         }
         ws.onmessage = function(evt) {
-            print("RESPONSE: " + evt.data);
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                var content = reader.result;
+                var results = content.split('\n')
+                console.log(results)
+                results.forEach(function (cur, idx, arr) {
+                    if (idx == 0) {
+                    } else {
+                        print("RESPONSE: " + cur);
+                    }
+                })
+
+            }
+            reader.readAsText(evt.data)
         }
         ws.onerror = function(evt) {
             print("ERROR: " + evt.data);
