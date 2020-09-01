@@ -1,8 +1,0 @@
-# This is a TOML document. Boom
-[Discovery]
-    RedisAddr = ":6379"
-
-[Kafka]
-    Topic = "bdim"
-    Group = "bdim-worker"
-    Brokers = ["localhost:9092"]

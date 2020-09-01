@@ -3,7 +3,6 @@ package conf
 import (
 	xtime "bdim/src/pkg/time"
 	"flag"
-	"fmt"
 	"github.com/BurntSushi/toml"
 	"os"
 	"time"
@@ -11,25 +10,35 @@ import (
 
 var (
 	confPath  string
-	region    string
-	zone      string
-	deployEnv string
-	host      string
+	redisAddr string
+	group string
+	topic string
+	brokers []string
+	host string
 	// Conf config
 	Conf *Config
 )
 
 func init() {
 	host, _ = os.Hostname()
+
 	flag.StringVar(&confPath, "conf", "comet.conf", "comet config path")
+	//flag.StringVar(&redisAddr, "redisAddr", "redis:localhost:6379", "redis")
+	//flag.StringVar(&group, "kafkagroup", "bdim-worker", "kafka group")
+	//flag.StringVar(&topic, "kafkatopic", "bdim", "kafka topic")
+	//var broker string
+	//flag.StringVar(&broker, "kafkabroker", "localhost:9092", "broker")
+	//brokers = append(brokers, broker)
 }
 
 // Init init config.
 func Init() (err error) {
 	Conf = Default()
-
+	//Conf.Discovery.RedisAddr = redisAddr
+	//Conf.Kafka.Topic = topic
+	//Conf.Kafka.Brokers = brokers
+	//Conf.Kafka.Group = group
 	_, err = toml.DecodeFile(confPath, &Conf)
-	fmt.Println(Conf.Kafka)
 	return
 }
 
