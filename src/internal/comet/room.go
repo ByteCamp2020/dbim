@@ -49,4 +49,5 @@ func (r *Room) Del(c *Channel) {
 	} else {
 		r.next = c.Next
 	}
+	r.rLock.Unlock()
 }

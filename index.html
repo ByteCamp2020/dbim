@@ -1,0 +1,86 @@
+<head>
+    <style>
+        #danmuarea {
+            position: relative;
+            background: #222;
+            width: 800px;
+            height: 445px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .center {
+            text-align: center;
+        }
+        .ctr {
+            font-size: 1em;
+        }
+    </style>
+</head>
+<div id="danmuarea">
+    <div id="my-container" style="width:640px;height:360px;"></div>
+</div>
+<button id="open">Open</button>
+<button id="send-button">Send</button>
+
+<!-- <script src="path/to/socket.io.js"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/danmaku/dist/danmaku.js"></script>
+<script>
+    var danmaku = new Danmaku({
+        container: document.getElementById('my-container')
+    });
+    var btn = document.getElementById('send-button');
+    btn.addEventListener('click', function () {
+        var comment = {
+            text: 'bla bla',
+            style: {
+                fontSize: '20px',
+                color: '#fff00f'
+            },
+        };
+        console.log("233")
+    });
+    var ws
+    var btn2 = document.getElementById('open');
+    btn2.addEventListener('click', function () {
+        if (ws) {
+            return false;
+        }
+        ws = new WebSocket("ws://localhost:3101/push?roomid=1");
+        ws.onopen = function (evt) {
+            console.log("ws opened!")
+        }
+        ws.onclose = function (evt) {
+            console.log("ws closed!")
+            ws = null;
+        }
+        ws.onmessage = function (evt) {
+            unpack(evt.data)
+        }
+        ws.onerror = function (evt) {
+            print("ERROR: " + evt.data);
+        }
+        return false;
+    });
+    function unpack(package) {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            var content = reader.result;
+            var results = content.split('\n')
+            console.log(results)
+            results.forEach(function (cur, idx, arr) {
+                if (idx == 0) {
+                } else {
+                    var comment = {
+                        text: cur,
+                        style: {
+                            fontSize: '20px',
+                            color: '#fff00f'
+                        },
+                    };
+                    danmaku.emit(comment)
+                }
+            })
+        }
+        reader.readAsText(package)
+    }
+</script>
