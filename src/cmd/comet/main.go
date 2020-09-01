@@ -41,10 +41,10 @@ func main() {
 	signal.Notify(ch, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)
 	for {
 		s := <-ch
-		glog.Info("bdim-comet get a signal %s", s.String())
+		glog.Infof("bdim-comet get a signal %s", s.String())
 		switch s {
 		case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT:
-			glog.Info("bdim-comet  exit")
+			glog.Info("bdim-comet exit")
 			grpcServer.GracefulStop()
 			cm.Close()
 			glog.Flush()

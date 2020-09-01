@@ -60,7 +60,7 @@ func (r *Room) pushproc(batch int, sigTime time.Duration) {
 		p    *comet.Package
 		buf  = bytes.NewWriterSize(int(comet.MaxBodySize))
 	)
-	log.Infof("start room:%s goroutine", r.id)
+	log.Infof("start room:%v goroutine", r.id)
 	td := time.AfterFunc(sigTime, func() {
 		select {
 		case r.pack <- roomReadyPackage:
@@ -101,7 +101,7 @@ func (r *Room) pushproc(batch int, sigTime time.Duration) {
 		}
 	}
 	r.worker.delRoom(r.id)
-	log.Infof("room:%s goroutine exit", r.id)
+	log.Infof("room:%v goroutine exit", r.id)
 }
 
 func (w *Worker) delRoom(roomID int32) {
@@ -121,7 +121,7 @@ func (w *Worker) getRoom(roomID int32) *Room {
 			w.rooms[roomID] = room
 		}
 		w.roomsMutex.Unlock()
-		log.Infof("new a room:%s active:%d", roomID, len(w.rooms))
+		log.Infof("new a room:%v active:%d", roomID, len(w.rooms))
 	}
 	return room
 }
