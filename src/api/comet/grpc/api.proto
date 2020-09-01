@@ -4,9 +4,8 @@ package bdim.comet;
 option go_package = ".;grpc";
 
 message Package {
-  int32 op = 1;
-  int32 roomid = 2;
-  bytes body = 3;
+  int32 roomid = 1;
+  bytes body = 2;
 }
 
 message PushReply {}

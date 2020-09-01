@@ -64,8 +64,6 @@ func (s *Server) test(c *gin.Context) {
 
 func (s *Server) push(c *gin.Context) {
 	var arg Arg
-	var op int32
-	op = 1
 	if err := c.BindQuery(&arg); err != nil {
 		errors(c, RequestErr, err.Error())
 		return
@@ -88,7 +86,7 @@ func (s *Server) push(c *gin.Context) {
 		return
 	}
 
-	if err = s.logic.PushRoom(c, op, arg.Room, arg.User, timestamp, msg); err != nil {
+	if err = s.logic.PushRoom(c, arg.Room, arg.User, timestamp, msg); err != nil {
 		errors(c, ServerErr, err.Error())
 		return
 	}

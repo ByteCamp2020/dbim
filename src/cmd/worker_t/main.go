@@ -21,7 +21,6 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	pkg := pb.Package{
-		Op:     0,
 		Roomid: 0,
 		Body:   []byte("111"),
 	}
