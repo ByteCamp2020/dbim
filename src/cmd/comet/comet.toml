@@ -1,0 +1,3 @@
+WsAddr = ":3101"
+RPCAddr = ":3109"
+RedisAddr = ":6379"
