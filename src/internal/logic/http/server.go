@@ -64,7 +64,8 @@ func (s *Server) test(c *gin.Context) {
 
 func (s *Server) push(c *gin.Context) {
 	var arg Arg
-	op := 1
+	var op int32
+	op = 1
 	if err := c.BindQuery(&arg); err != nil {
 		errors(c, RequestErr, err.Error())
 		return
