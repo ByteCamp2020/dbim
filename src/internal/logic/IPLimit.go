@@ -11,7 +11,7 @@ type Limiter struct {
 	// Redis client connection.
 	rc *redis.Client
 	Count int64
-	Dur   time.Duration
+	Dur   string
 }
 
 func NewLimiter(c conf.HTTPServer) (*Limiter, error) {
@@ -53,7 +53,8 @@ func (l *Limiter) Allow(key string, events int64, per time.Duration) bool {
 func (l *Limiter) UserLimit(userID string) bool {
 	getRes := l.rc.Get(userID)
 	pipe:= l.rc.TxPipeline()
-	pipe.Set(userID, 0, l.Dur)
+	timeDur, _ := time.ParseDuration(l.Dur)
+	pipe.Set(userID, 0, timeDur)
 	_, _ = pipe.Exec()
 	if getRes.Err() != redis.Nil {
 		return false

@@ -64,7 +64,7 @@ type HTTPServer struct {
 	IsLimit      bool
 	RedisAddr    string
 	Count        int64
-	Dur          time.Duration
+	Dur          string
 }
 
 type Kafka struct {

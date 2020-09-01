@@ -1,16 +1,14 @@
 package main
 
 import (
-	"flag"
-	"os"
-	"os/signal"
-	"syscall"
-	"time"
-
 	"bdim/src/internal/logic"
 	"bdim/src/internal/logic/conf"
 	"bdim/src/internal/logic/http"
+	"flag"
 	log "github.com/golang/glog"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 const (
@@ -27,11 +25,6 @@ func main() {
 
 	// logic
 	srv := logic.New(conf.Conf)
-	conf.Conf.HTTPServer.IsLimit = true
-	conf.Conf.HTTPServer.RedisAddr = "redis://localhost:6379"
-	// 2 times in 1 second
-	conf.Conf.HTTPServer.Count = 2
-	conf.Conf.HTTPServer.Dur = 1 * time.Second
 
 	httpSrv := http.New(conf.Conf.HTTPServer, srv)
 

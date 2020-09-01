@@ -7,6 +7,7 @@ import (
 	"github.com/joomcode/errorx"
 	"log"
 	"net/http"
+	"time"
 )
 
 var (
@@ -59,7 +60,8 @@ func MWHandleErrors() gin.HandlerFunc {
 
 func RateMiddleware(limiter *logic.Limiter) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		if !limiter.Allow(c.ClientIP(), limiter.Count, limiter.Dur) {
+		timeDur, _ := time.ParseDuration(limiter.Dur)
+		if !limiter.Allow(c.ClientIP(), limiter.Count, timeDur) {
 			c.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{
 				"error": "too many requests",
 			})
