@@ -12,7 +12,7 @@ type Discovery struct {
 func NewDiscovery(redisAddr string) *Discovery {
 	c, err := redis.Dial("tcp", redisAddr)
 	if err != nil {
-		fmt.Println("Connect to redis error", err)
+		fmt.Println("Connect to redigit s error", err)
 		return nil
 	}
 	d := &Discovery{conn: c}

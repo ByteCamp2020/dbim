@@ -11,6 +11,7 @@ import (
 var (
 	confPath string
 	host     string
+	tp *TomlParas
 )
 
 type TomlParas struct {
@@ -28,7 +29,12 @@ type Config struct {
 
 func init() {
 	host, _ = os.Hostname()
+	//tp = &TomlParas{}
 	flag.StringVar(&confPath, "conf", "comet.conf", "comet config path")
+	//flag.StringVar(&tp.WsAddr, "wsaddr", ":3101", "websocket address")
+	//flag.StringVar(&tp.RPCAddr, "rpcaddr", ":3109", "rpc server address")
+	//flag.StringVar(&tp.RedisAddr, "redisaddr", ":6379", "redis addr")
+
 }
 
 func Default() *Config {
@@ -57,14 +63,14 @@ func Default() *Config {
 func Init() *Config {
 	cfg := Default()
 	fmt.Println(confPath)
-	var tp TomlParas
+
 	if _, err := toml.DecodeFile(confPath, &tp); err != nil {
 		fmt.Println(err)
 	}
 	fmt.Println(tp)
-	cfg.WebSocket.WsAddr = tp.WsAddr
-	cfg.RPCServer.Addr = tp.RPCAddr
-	cfg.Discovery.RedisAddr = tp.RedisAddr
+	//cfg.WebSocket.WsAddr = tp.WsAddr
+	//cfg.RPCServer.Addr = tp.RPCAddr
+	//cfg.Discovery.RedisAddr = tp.RedisAddr
 	return cfg
 }
 
