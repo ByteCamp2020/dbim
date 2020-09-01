@@ -39,12 +39,12 @@ func (l *Limiter) Allow(key string, events int64, per time.Duration) bool {
 
 	if v := l.rc.Exists(key).Val(); v == 0 {
 		pipe := l.rc.TxPipeline()
-		pipe.RPush(key, key)
+		pipe.RPush(key, 0)
 		// set ttl
 		pipe.Expire(key, per)
 		_, _ = pipe.Exec()
 	} else {
-		l.rc.RPushX(key, key)
+		l.rc.RPushX(key, 0)
 	}
 
 	return true
