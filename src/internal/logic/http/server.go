@@ -54,7 +54,6 @@ func (s *Server) Close() {
 }
 
 type Arg struct {
-	Op   int32  `form:"operation" binding:"required"`
 	Room int32  `form:"room" binding:"required"`
 	User string `form:"user" binding:"required"`
 }
@@ -65,6 +64,7 @@ func (s *Server) test(c *gin.Context) {
 
 func (s *Server) push(c *gin.Context) {
 	var arg Arg
+	op := 1
 	if err := c.BindQuery(&arg); err != nil {
 		errors(c, RequestErr, err.Error())
 		return
@@ -87,7 +87,7 @@ func (s *Server) push(c *gin.Context) {
 		return
 	}
 
-	if err = s.logic.PushRoom(c, arg.Op, arg.Room, arg.User, timestamp, msg); err != nil {
+	if err = s.logic.PushRoom(c, op, arg.Room, arg.User, timestamp, msg); err != nil {
 		errors(c, ServerErr, err.Error())
 		return
 	}
