@@ -110,13 +110,11 @@ func serveHTTP(w http.ResponseWriter, r *http.Request) {
 			return true
 		},
 	}
-	fmt.Println("?????????????????")
 	roomid, err := strconv.ParseInt(r.URL.Query()["roomid"][0], 10, 32)
 	if err != nil {
 		glog.Error("Args wrong", err)
 	}
 	conn, err := upgrade.Upgrade(w, r, nil)
-	fmt.Println("??!!")
 	if err != nil {
 		fmt.Println(err)
 		glog.Error("Upgrade fail", err)
