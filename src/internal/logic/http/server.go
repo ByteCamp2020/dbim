@@ -24,8 +24,7 @@ func New(c *conf.HTTPServer, l *logic.Logic) *Server {
 		if err != nil {
 			panic(err)
 		}
-		engine.Use(MWHandleErrors())
-		//engine.Use(MWHandleErrors(), RateMiddleware(limiter))
+		engine.Use(MWHandleErrors(), RateMiddleware(limiter))
 		l.Limiter = limiter
 	} else {
 		engine.Use(MWHandleErrors())
