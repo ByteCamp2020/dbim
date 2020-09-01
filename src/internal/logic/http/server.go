@@ -78,7 +78,7 @@ func (s *Server) push(c *gin.Context) {
 	}
 	// check the forbidden words
 	if s.logic.DFA.CheckSentence(string(msg)) == false {
-		errors(c, RequestErr, err.Error())
+		errors(c, RequestErr, "forbidden word")
 		return
 	}
 	// user limit
