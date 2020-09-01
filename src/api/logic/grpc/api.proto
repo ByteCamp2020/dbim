@@ -11,8 +11,7 @@ message Msg {
 }
 
 message PushMsg {
-  int32 op = 1;
-  int32 roomid = 2;
-  string user = 3;
-  bytes msg = 4;
+  int32 roomid = 1;
+  string user = 2;
+  bytes msg = 3;
 }

@@ -98,7 +98,6 @@ func (c *Comet) process(roomChan chan *comet.Package) {
 	for {
 		roomArg := <-roomChan
 		_, err := c.client.Push(context.Background(), &comet.Package{
-			Op:     roomArg.Op,
 			Roomid: roomArg.Roomid,
 			Body:   roomArg.Body,
 		})

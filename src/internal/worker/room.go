@@ -38,9 +38,8 @@ func NewRoom(worker *Worker, id int32, c *conf.Room) (r *Room) {
 }
 
 // Push push msg to the room, if chan full discard it.
-func (r *Room) Push(op int32, msg []byte) (err error) {
+func (r *Room) Push(msg []byte) (err error) {
 	var p = &comet.Package{
-		Op:   op,
 		Body: msg,
 	}
 	select {
