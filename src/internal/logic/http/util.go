@@ -59,7 +59,6 @@ func MWHandleErrors() gin.HandlerFunc {
 
 func RateMiddleware(limiter *logic.Limiter) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// 2 times in 1 second
 		if !limiter.Allow(c.ClientIP(), limiter.Count, limiter.Dur) {
 			c.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{
 				"error": "too many requests",

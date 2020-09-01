@@ -14,6 +14,7 @@ type Logic struct {
 	c        *conf.Config
 	kafkaPub kafka.SyncProducer
 	DFA      *DFAUtil
+	Limiter  *Limiter
 }
 
 // New init

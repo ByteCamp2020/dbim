@@ -29,9 +29,9 @@ func main() {
 	srv := logic.New(conf.Conf)
 	conf.Conf.HTTPServer.IsLimit = true
 	conf.Conf.HTTPServer.RedisAddr = "redis://localhost:6379"
-	// 2 times in one second
-	conf.Conf.HTTPServer.Count = 20
-	conf.Conf.HTTPServer.Dur = 100 * time.Second
+	// 2 times in 1 second
+	conf.Conf.HTTPServer.Count = 2
+	conf.Conf.HTTPServer.Dur = 1 * time.Second
 
 	httpSrv := http.New(conf.Conf.HTTPServer, srv)
 

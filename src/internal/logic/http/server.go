@@ -3,11 +3,10 @@ package http
 import (
 	"bdim/src/internal/logic"
 	"bdim/src/internal/logic/conf"
+	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"
 	"time"
-
-	"github.com/gin-gonic/gin"
 )
 
 // Server is http server.
@@ -25,7 +24,9 @@ func New(c *conf.HTTPServer, l *logic.Logic) *Server {
 		if err != nil {
 			panic(err)
 		}
-		engine.Use(MWHandleErrors(), RateMiddleware(limiter))
+		engine.Use(MWHandleErrors())
+		//engine.Use(MWHandleErrors(), RateMiddleware(limiter))
+		l.Limiter = limiter
 	} else {
 		engine.Use(MWHandleErrors())
 	}
@@ -75,11 +76,18 @@ func (s *Server) push(c *gin.Context) {
 		errors(c, RequestErr, err.Error())
 		return
 	}
+	// check the forbidden words
 	if s.logic.DFA.CheckSentence(string(msg)) == false {
 		errors(c, RequestErr, err.Error())
 		return
 	}
+	// user limit
 	timestamp := int32(time.Now().Unix())
+	if s.logic.Limiter.UserLimit(arg.User) == false {
+		errors(c, http.StatusTooManyRequests, "too many requests")
+		return
+	}
+
 	if err = s.logic.PushRoom(c, arg.Op, arg.Room, arg.User, timestamp, msg); err != nil {
 		errors(c, ServerErr, err.Error())
 		return

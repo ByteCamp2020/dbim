@@ -49,3 +49,14 @@ func (l *Limiter) Allow(key string, events int64, per time.Duration) bool {
 
 	return true
 }
+
+func (l *Limiter) UserLimit(userID string) bool {
+	getRes := l.rc.Get(userID)
+	pipe:= l.rc.TxPipeline()
+	pipe.Set(userID, 0, l.Dur)
+	_, _ = pipe.Exec()
+	if getRes.Err() != redis.Nil {
+		return false
+	}
+	return true
+}
