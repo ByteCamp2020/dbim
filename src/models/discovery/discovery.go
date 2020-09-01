@@ -2,45 +2,51 @@ package discovery
 
 import (
 	"fmt"
-	"github.com/garyburd/redigo/redis"
+	"github.com/go-redis/redis"
 )
 
 type Discovery struct {
-	conn redis.Conn
+	conn *redis.Client
 }
 
 func NewDiscovery(redisAddr string) *Discovery {
-	c, err := redis.Dial("tcp", redisAddr)
+	opts, err := redis.ParseURL(redisAddr)
 	if err != nil {
-		fmt.Println("Connect to redigit s error", err)
 		return nil
 	}
-	d := &Discovery{conn: c}
+	rc := redis.NewClient(opts)
+	if err := rc.Ping().Err(); err != nil {
+		return nil
+	}
+
+	d := &Discovery{conn: rc}
 	return d
 }
 
 func (d *Discovery) GetCometAddr() []string {
-	num, err := d.conn.Do("llen", "cometlist")
-	if err != nil {
-		fmt.Println("Cometlist get len err", err)
-	}
+	num := d.conn.LLen("cometlist").Val()
+
 	var res []string
-	val, _ := redis.Values(d.conn.Do("lrange", "cometlist", "0", num))
+	val, _ := d.conn.LRange("cometlist", 0, num).Result()
 	for _, v := range val {
-		res = append(res, string(v.([]byte)))
+		res = append(res, v)
 	}
 	return res
 }
 
 func (d *Discovery) RegComet(addr string) {
-	_, err := d.conn.Do("lpush", "cometlist", addr)
+	pipe := d.conn.TxPipeline()
+	pipe.RPush("cometlist", addr)
+	_, err := pipe.Exec()
 	if err != nil {
 		fmt.Println("Register comet failed")
 	}
 }
 
 func (d *Discovery) DelComet(addr string) {
-	_, err := d.conn.Do("lrem", "cometlist", 1, addr)
+	pipe := d.conn.TxPipeline()
+	pipe.LRem("cometlist", 1, addr)
+	_, err := pipe.Exec()
 	if err != nil {
 		fmt.Println("Del comet failed", err)
 	}
