@@ -2,11 +2,11 @@ package conf
 
 import (
 	"flag"
+	"fmt"
 	"github.com/BurntSushi/toml"
 	"os"
 	"strings"
 	"time"
-	"fmt"
 )
 
 var (

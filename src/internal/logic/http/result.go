@@ -18,7 +18,6 @@ const (
 type resp struct {
 	Code    int         `json:"code"`
 	Message string      `json:"message"`
-	Data    interface{} `json:"data,omitempty"`
 }
 
 func errors(c *gin.Context, code int, msg string) {
@@ -29,10 +28,10 @@ func errors(c *gin.Context, code int, msg string) {
 	})
 }
 
-func result(c *gin.Context, data interface{}, code int) {
+func result(c *gin.Context, msg string, code int) {
 	c.Set(contextErrCode, code)
 	c.JSON(200, resp{
 		Code: code,
-		Data: data,
+		Message: msg,
 	})
 }
