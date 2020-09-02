@@ -1,6 +1,5 @@
 package http
 
-import "C"
 import (
 	"bdim/src/internal/logic"
 	"bdim/src/internal/logic/conf"
