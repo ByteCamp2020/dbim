@@ -11,6 +11,7 @@ import (
 	"os/signal"
 	"runtime"
 	"syscall"
+	"fmt"
 )
 
 func main() {
@@ -35,8 +36,9 @@ func main() {
 	grpcServer := grpc.New(cfg.RPCServer, c)
 	// register
 	d := discovery.NewDiscovery(cfg.Discovery.RedisAddr)
-	d.RegComet(cfg.RPCServer.Addr)
-	defer d.DelComet(cfg.RPCServer.Addr)
+	fmt.Println("Registering grpc server, add:",cfg.RPCServer.RegAddr)
+	d.RegComet(cfg.RPCServer.RegAddr)
+	defer d.DelComet(cfg.RPCServer.RegAddr)
 	ch := make(chan os.Signal, 1)
 	signal.Notify(ch, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)
 	for {
