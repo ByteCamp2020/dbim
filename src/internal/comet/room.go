@@ -51,3 +51,21 @@ func (r *Room) Del(c *Channel) {
 	}
 	r.rLock.Unlock()
 }
+
+func (r *Room) Close() {
+	var tmp *Channel
+	var cur *Channel
+	r.rLock.Lock()
+	if r.next == nil {
+		return
+	}
+	cur = r.next
+	r.next = nil
+	for cur != nil {
+		tmp = cur.Next
+		cur.Next = nil
+		cur.Prev = nil
+		cur = tmp
+	}
+	r.rLock.Unlock()
+}

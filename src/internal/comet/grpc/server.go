@@ -23,6 +23,7 @@ func New(cfg *conf.RPCServer, c *comet.Comet) *grpc.Server {
 		Timeout:               cfg.KeepAliveTimeout,
 		MaxConnectionAge:      cfg.MaxLifeTime,
 	})
+	fmt.Println(cfg.Addr)
 	lis, err := net.Listen("tcp", fmt.Sprintf("%s", cfg.Addr))
 	if err != nil {
 
@@ -31,6 +32,7 @@ func New(cfg *conf.RPCServer, c *comet.Comet) *grpc.Server {
 	pb.RegisterCometServer(grpcServer, &server{c})
 	go func() {
 		if err := grpcServer.Serve(lis); err != nil {
+			fmt.Print(err)
 			panic(err)
 		}
 	}()

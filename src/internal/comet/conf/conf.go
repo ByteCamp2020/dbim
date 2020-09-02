@@ -1,9 +1,7 @@
 package conf
 
 import (
-	"flag"
 	"fmt"
-	"github.com/BurntSushi/toml"
 	"os"
 	"time"
 )
@@ -18,6 +16,7 @@ type TomlParas struct {
 	WsAddr string
 	RPCAddr string
 	RedisAddr string
+	RPCRegAddr string
 }
 
 type Config struct {
@@ -25,22 +24,22 @@ type Config struct {
 	Comet     *Comet
 	RPCServer *RPCServer
 	Discovery *Discovery
+	Host string
 }
 
 func init() {
 	host, _ = os.Hostname()
-	//tp = &TomlParas{}
-	flag.StringVar(&confPath, "conf", "comet.conf", "comet config path")
-	//flag.StringVar(&tp.WsAddr, "wsaddr", ":3101", "websocket address")
-	//flag.StringVar(&tp.RPCAddr, "rpcaddr", ":3109", "rpc server address")
-	//flag.StringVar(&tp.RedisAddr, "redisaddr", ":6379", "redis addr")
-
+	tp = &TomlParas{}
+	tp.WsAddr ="0.0.0.0:3101"
+	tp.RPCAddr = "0.0.0.0:3209"
+	tp.RPCRegAddr = os.Getenv("COMET_GRPC_SERVER")
+	tp.RedisAddr = "redis://10.108.21.18:6379"
 }
 
 func Default() *Config {
 	return &Config{
 		WebSocket: &WebSocket{
-			ClientNo: int(1e7),
+			RoomNo: int(1024),
 		},
 		RPCServer: &RPCServer{
 			Timeout:           time.Second,
@@ -57,20 +56,23 @@ func Default() *Config {
 			RoomNo:      1024,
 			Host:        host,
 		},
+		Host: host,
 	}
 }
 
 func Init() *Config {
 	cfg := Default()
-	fmt.Println(confPath)
+	//fmt.Println(confPath)
 
-	if _, err := toml.DecodeFile(confPath, &tp); err != nil {
-		fmt.Println(err)
-	}
+	//if _, err := toml.DecodeFile(confPath, &tp); err != nil {
+	//	fmt.Println(err)
+	//}
 	fmt.Println(tp)
-	//cfg.WebSocket.WsAddr = tp.WsAddr
-	//cfg.RPCServer.Addr = tp.RPCAddr
-	//cfg.Discovery.RedisAddr = tp.RedisAddr
+	cfg.WebSocket.WsAddr = tp.WsAddr
+	cfg.RPCServer.Addr = tp.RPCAddr
+	cfg.RPCServer.RegAddr = tp.RPCRegAddr
+	cfg.Discovery.RedisAddr = tp.RedisAddr
+
 	return cfg
 }
 
@@ -79,6 +81,7 @@ func Init() *Config {
 // port
 type RPCServer struct {
 	Addr              string
+	RegAddr 		  string
 	Timeout           time.Duration
 	IdleTimeout       time.Duration
 	MaxLifeTime       time.Duration
@@ -100,5 +103,5 @@ type Discovery struct {
 
 type WebSocket struct {
 	WsAddr   string
-	ClientNo int
+	RoomNo int
 }

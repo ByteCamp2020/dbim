@@ -7,11 +7,13 @@ import (
 	log "github.com/golang/glog"
 	"os"
 	"os/signal"
+	"runtime"
 	"syscall"
 )
 
 func main() {
 	flag.Parse()
+	runtime.GOMAXPROCS(runtime.NumCPU())
 	if err := conf.Init(); err != nil {
 		panic(err)
 	}

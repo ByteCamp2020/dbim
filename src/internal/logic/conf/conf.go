@@ -1,10 +1,9 @@
 package conf
 
 import (
-	"flag"
 	"fmt"
-	"github.com/BurntSushi/toml"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -25,28 +24,33 @@ var (
 
 func init() {
 	host, _ = os.Hostname()
-	flag.StringVar(&confPath, "conf", "comet.conf", "comet config path")
-	//flag.StringVar(&httpAddr, "httpAddr", "localhost:2333", "Http server")
-	//flag.BoolVar(&isLimit, "isLimit", true, "is Limit")
-	//flag.StringVar(&redisAddr, "redisAddr", "redis:localhost:6379", "redis")
-	//flag.IntVar(&count, "count", 2, "one ip per duration most")
-	//flag.StringVar(&dur, "duration", "1s","duration")
-	//flag.StringVar(&topic, "kafkaTopic", "bdim", "kafka topic")
-	//var broker string
-	//flag.StringVar(&broker, "broker", "localhost:9092", "broker")
+	httpAddr = "httpAddr"
+	isFilter, _ := strconv.Atoi(os.Getenv("OPEN_FILTER"))
+	if isFilter == 1 {
+		isLimit = true
+	} else {
+		isLimit = false
+	}
+	count, _ = strconv.Atoi(os.Getenv("COUNT"))
+	dur = os.Getenv("DURATION")
+	redisAddr = "redis://10.108.21.18:6379"
+	topic = "bdim"
+	var broker string
+	broker = "10.108.21.19:9092"
+	brokers = append(brokers, broker)
 }
 
 // Init init config.
 func Init() (err error) {
 	Conf = Default()
-	//Conf.Kafka.Topic = topic
-	//Conf.Kafka.Brokers = brokers
-	//Conf.HTTPServer.RedisAddr = redisAddr
-	//Conf.HTTPServer.Count = int64(count)
-	//Conf.HTTPServer.Dur = dur
-	//Conf.HTTPServer.Addr = httpAddr
-	//Conf.HTTPServer.IsLimit = isLimit
-	_, err = toml.DecodeFile(confPath, &Conf)
+	Conf.Kafka.Topic = topic
+	Conf.Kafka.Brokers = brokers
+	Conf.HTTPServer.RedisAddr = redisAddr
+	Conf.HTTPServer.Count = int64(count)
+	Conf.HTTPServer.Dur = dur
+	Conf.HTTPServer.Addr = httpAddr
+	Conf.HTTPServer.IsLimit = isLimit
+	//_, err = toml.DecodeFile(confPath, &Conf)
 	fmt.Println(Conf.Kafka)
 	return
 }
