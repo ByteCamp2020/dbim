@@ -1,10 +1,11 @@
 package time
 
 import (
+	"fmt"
 	"sync"
 	itime "time"
 
-	log "github.com/golang/glog"
+	"bdim/src/models/log"
 )
 
 const (
@@ -131,11 +132,11 @@ func (t *Timer) add(td *TimerData) {
 		d = td.Delay()
 		t.signal.Reset(d)
 		if Debug {
-			log.Infof("timer: add reset delay %d ms", int64(d)/int64(itime.Millisecond))
+			log.Info(fmt.Sprintf("timer: add reset delay %d ms", int64(d)/int64(itime.Millisecond)), nil)
 		}
 	}
 	if Debug {
-		log.Infof("timer: push item key: %s, expire: %s, index: %d", td.Key, td.ExpireString(), td.index)
+		log.Info(fmt.Sprintf("timer: push item key: %s, expire: %s, index: %d", td.Key, td.ExpireString(), td.index),nil)
 	}
 }
 
@@ -147,7 +148,7 @@ func (t *Timer) del(td *TimerData) {
 	if i < 0 || i > last || t.timers[i] != td {
 		// already remove, usually by expire
 		if Debug {
-			log.Infof("timer del i: %d, last: %d, %p", i, last, td)
+			log.Info(fmt.Sprintf("timer del i: %d, last: %d, %p", i, last, td), nil)
 		}
 		return
 	}
@@ -160,7 +161,7 @@ func (t *Timer) del(td *TimerData) {
 	t.timers[last].index = -1 // for safety
 	t.timers = t.timers[:last]
 	if Debug {
-		log.Infof("timer: remove item key: %s, expire: %s, index: %d", td.Key, td.ExpireString(), td.index)
+		log.Info(fmt.Sprintf("timer: remove item key: %s, expire: %s, index: %d", td.Key, td.ExpireString(), td.index), nil)
 	}
 }
 
@@ -195,7 +196,7 @@ func (t *Timer) expire() {
 		if len(t.timers) == 0 {
 			d = infiniteDuration
 			if Debug {
-				log.Info("timer: no other instance")
+				log.Info("timer: no other instance", nil)
 			}
 			break
 		}
@@ -208,10 +209,10 @@ func (t *Timer) expire() {
 		t.del(td)
 		t.lock.Unlock()
 		if fn == nil {
-			log.Warning("expire timer no fn")
+			log.Info("expire timer no fn", nil)
 		} else {
 			if Debug {
-				log.Infof("timer key: %s, expire: %s, index: %d expired, call fn", td.Key, td.ExpireString(), td.index)
+				log.Info(fmt.Sprintf("timer key: %s, expire: %s, index: %d expired, call fn", td.Key, td.ExpireString(), td.index), nil)
 			}
 			fn()
 		}
@@ -219,7 +220,7 @@ func (t *Timer) expire() {
 	}
 	t.signal.Reset(d)
 	if Debug {
-		log.Infof("timer: expier reset delay %d ms", int64(d)/int64(itime.Millisecond))
+		log.Info(fmt.Sprintf("timer: expier reset delay %d ms", int64(d)/int64(itime.Millisecond)), nil)
 	}
 	t.lock.Unlock()
 }

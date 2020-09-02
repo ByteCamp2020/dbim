@@ -3,12 +3,12 @@ package dbworker
 import (
 	pb "bdim/src/api/logic/grpc"
 	"bdim/src/internal/dbworker/conf"
+	"bdim/src/models/log"
 	"fmt"
 
 	"bdim/src/internal/dbworker/dao"
 	cluster "github.com/bsm/sarama-cluster"
 	"google.golang.org/protobuf/proto"
-	log "github.com/golang/glog"
 )
 
 // Worker is push Worker.
@@ -58,9 +58,9 @@ func (w *DbWorker) Consume() {
 	for {
 		select {
 		case err := <-w.consumer.Errors():
-			log.Errorf("consumer error(%v)", err)
+			log.Error("consumer error(%v)", err)
 		case n := <-w.consumer.Notifications():
-			log.Infof("consumer rebalanced(%v)", n)
+			log.Info(fmt.Sprintf("consumer rebalanced(%v)", n),nil)
 		case msg, ok := <-w.consumer.Messages():
 			if !ok {
 				return
@@ -69,13 +69,13 @@ func (w *DbWorker) Consume() {
 			// process push message
 			mesg := new(pb.Msg)
 			if err := proto.Unmarshal(msg.Value, mesg); err != nil {
-				log.Errorf("proto.Unmarshal(%v) error(%v)", mesg, err)
+				log.Error(fmt.Sprintf("proto.Unmarshal(%v) ", mesg), err)
 				continue
 			}
 			fmt.Println("receive", msg)
 			message := string(mesg.Pm.Msg)
 			w.dao.AddMessage(mesg.Pm.User, mesg.Pm.Roomid, message, mesg.Timestamp, mesg.Visible)
-			log.Infof("Dao:consume: %s/%d/%d\t%s\t%+v", msg.Topic, msg.Partition, msg.Offset, msg.Key, mesg)
+			log.Info(fmt.Sprintf("Dao:consume: %s/%d/%d\t%s\t%+v", msg.Topic, msg.Partition, msg.Offset, msg.Key, mesg),nil)
 		}
 	}
 }

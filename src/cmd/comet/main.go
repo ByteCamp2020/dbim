@@ -5,19 +5,19 @@ import (
 	"bdim/src/internal/comet/conf"
 	"bdim/src/internal/comet/grpc"
 	"bdim/src/models/discovery"
+	"bdim/src/models/log"
 	"flag"
-	"github.com/golang/glog"
+	"fmt"
 	"os"
 	"os/signal"
 	"runtime"
 	"syscall"
-	"fmt"
 )
 
 func main() {
 	flag.Parse()
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	glog.Info("Initiating comet server.")
+	log.Info("Initiating comet server.", nil)
 	// new config
 	cfg := conf.Init()
 	// new comet
@@ -43,13 +43,12 @@ func main() {
 	signal.Notify(ch, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)
 	for {
 		s := <-ch
-		glog.Infof("bdim-comet get a signal %s", s.String())
+		log.Info(fmt.Sprintf("bdim-comet get a signal %s", s.String()), nil)
 		switch s {
 		case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT:
-			glog.Info("bdim-comet exit")
+			log.Info("bdim-comet exit", nil)
 			grpcServer.GracefulStop()
 			cm.Close()
-			glog.Flush()
 			return
 		case syscall.SIGHUP:
 		default:

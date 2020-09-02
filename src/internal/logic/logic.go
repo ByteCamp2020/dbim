@@ -3,8 +3,9 @@ package logic
 import (
 	pb "bdim/src/api/logic/grpc"
 	"bdim/src/internal/logic/conf"
+	"bdim/src/models/log"
 	"context"
-	log "github.com/golang/glog"
+	"fmt"
 	"google.golang.org/protobuf/proto"
 	kafka "gopkg.in/Shopify/sarama.v1"
 )
@@ -67,7 +68,7 @@ func (l *Logic) PushRoom(c context.Context, room int32, user string, timestamp i
 		Value: kafka.ByteEncoder(b),
 	}
 	if _, _, err = l.kafkaPub.SendMessage(m); err != nil {
-		log.Errorf("PushMsg.send(broadcast_room pushMsg:%v) error(%v)", pushMsg, err)
+		log.Error(fmt.Sprintf("PushMsg.send(broadcast_room pushMsg:%v) error ", pushMsg), err)
 		return err
 	}
 	return

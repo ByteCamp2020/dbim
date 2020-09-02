@@ -2,8 +2,8 @@ package comet
 
 import (
 	"bdim/src/internal/comet/conf"
+	"bdim/src/models/log"
 	"fmt"
-	"github.com/golang/glog"
 	"github.com/gorilla/websocket"
 	"net/http"
 	"strconv"
@@ -108,19 +108,19 @@ func serveHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	temprid := r.URL.Query()["roomid"]
 	if (len(temprid) < 1) {
-		glog.Error("Args wrong", fmt.Errorf("roomid wrong"))
+		log.Error("Args wrong", fmt.Errorf("roomid wrong"))
 		return
 	}
 
 	roomid, err := strconv.ParseInt(temprid[0], 10, 32)
 	if err != nil {
-		glog.Error("Args wrong", err)
+		log.Error("Args wrong", err)
 		return
 	}
 	conn, err := upgrade.Upgrade(w, r, nil)
 	if err != nil {
 		fmt.Println(err)
-		glog.Error("Upgrade fail", err)
+		log.Error("Upgrade fail", err)
 		return
 	}
 	register := &Register{
