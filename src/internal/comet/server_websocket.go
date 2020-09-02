@@ -15,7 +15,6 @@ var (
 
 type ClientManager struct {
 	addr      string
-	Clients   map[*Client]bool
 	comet     *Comet
 	cfg       *conf.WebSocket
 	clientCnt int
@@ -33,7 +32,6 @@ type Register struct {
 func NewClientManage(cfg *conf.WebSocket, comet *Comet) *ClientManager {
 	cm := &ClientManager{
 		addr:    cfg.WsAddr,
-		Clients: make(map[*Client]bool, cfg.ClientNo),
 		comet:   comet,
 		cfg:     cfg,
 	}
@@ -64,8 +62,8 @@ func (c *Client) pushProc() {
 func (cm *ClientManager) watch(c *Client) {
 	for {
 		_, _, err := c.conn.ReadMessage()
-		fmt.Println("delected found")
 		if err != nil {
+			fmt.Println("delected found,", err)
 			cm.del(c)
 			return
 		}
@@ -73,19 +71,18 @@ func (cm *ClientManager) watch(c *Client) {
 }
 
 func (cm *ClientManager) Close() {
-	for k, _ := range cm.Clients {
-		cm.del(k)
-	}
+	cm.comet.Close()
 }
 
 func (cm *ClientManager) registerPros() {
 	for {
 		register := <-registerCh
 		// new channel
+		fmt.Println(len(registerCh))
+
 		ch := NewChannel()
 		cm.comet.Put(ch, register.roomID)
 		client := NewClient(register.conn, ch, register.roomID)
-		cm.Clients[client] = true
 		go cm.watch(client)
 	}
 }
@@ -93,7 +90,6 @@ func (cm *ClientManager) registerPros() {
 func (cm *ClientManager) del(c *Client) {
 	c.channel.Room.Del(c.channel)
 	c.conn.Close()
-	delete(cm.Clients, c)
 }
 
 func StartWebSocket(addr string) {
@@ -123,5 +119,7 @@ func serveHTTP(w http.ResponseWriter, r *http.Request) {
 		conn:   conn,
 		roomID: int32(roomid),
 	}
+	fmt.Printf("New connect to Room%v\n", roomid)
+	fmt.Println(len(registerCh))
 	registerCh <- register
 }

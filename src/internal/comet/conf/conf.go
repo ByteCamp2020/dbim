@@ -68,9 +68,9 @@ func Init() *Config {
 		fmt.Println(err)
 	}
 	fmt.Println(tp)
-	//cfg.WebSocket.WsAddr = tp.WsAddr
-	//cfg.RPCServer.Addr = tp.RPCAddr
-	//cfg.Discovery.RedisAddr = tp.RedisAddr
+	cfg.WebSocket.WsAddr = tp.WsAddr
+	cfg.RPCServer.Addr = tp.RPCAddr
+	cfg.Discovery.RedisAddr = tp.RedisAddr
 	return cfg
 }
 

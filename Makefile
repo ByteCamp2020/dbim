@@ -14,10 +14,15 @@ fmt:
 	$(CGOENV) go fmt ./...
 vet:
 	$(CGOENV) go vet ./...
+# build:
+# 	$(CGOENV) go build -o bin/logic ./src/cmd/logic/main.go
+# 	$(CGOENV) go build -o bin/worker ./src/cmd/worker/main.go
+# 	$(CGOENV) go build -o bin/comet ./src/cmd/comet/main.go
+# 	$(CGOENV) go build -o bin/dbworker ./src/cmd/dbworker/main.go
 build:
-	$(CGOENV) go build -o bin/logic ./src/cmd/logic/main.go
-	$(CGOENV) go build -o bin/worker ./src/cmd/worker/main.go
-	$(CGOENV) go build -o bin/comet ./src/cmd/comet/main.go
-	$(CGOENV) go build -o bin/dbworker ./src/cmd/dbworker/main.go
+    GOARCH=amd64 GOOS=linux go build -o dep/logic/main ./src/cmd/logic/main.go
+	GOARCH=amd64 GOOS=linux go build -o dep/worker/main ./src/cmd/worker/main.go
+	GOARCH=amd64 GOOS=linux go build -o dep/comet/main ./src/cmd/comet/main.go
+# 	CGO_ENABLED=$(CGO_ENABLED) GOARCH=$(GOARCH) GOOS=$(GOOS) go build -o dep/dbworker/dbworker ./src/cmd/dbworker/main.go
 image:
 	docker build -t bin/logic:${COMMIT_SHA} .

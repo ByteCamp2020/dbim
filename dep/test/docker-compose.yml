@@ -1,0 +1,14 @@
+version: '3.8'
+networks:
+  test:
+services:
+  test:
+    environment:
+      INPUT_ADDR: 12344
+    build:
+      context: .
+  test1:
+    environment:
+      INPUT_ADDR: 12355
+    build:
+      context: .

@@ -10,15 +10,18 @@ type Discovery struct {
 }
 
 func NewDiscovery(redisAddr string) *Discovery {
+	fmt.Println("Redis addr", redisAddr)
 	opts, err := redis.ParseURL(redisAddr)
 	if err != nil {
+		fmt.Println(err)
 		return nil
 	}
+	fmt.Println(opts)
 	rc := redis.NewClient(opts)
 	if err := rc.Ping().Err(); err != nil {
+		fmt.Println(err)
 		return nil
 	}
-
 	d := &Discovery{conn: rc}
 	return d
 }

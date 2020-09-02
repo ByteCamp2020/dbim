@@ -57,3 +57,9 @@ func (c *Comet) cometProc(ch chan *grpc.Package) {
 		}
 	}
 }
+
+func (c *Comet) Close() {
+	for _, room := range c.rooms {
+		room.Close()
+	}
+}
