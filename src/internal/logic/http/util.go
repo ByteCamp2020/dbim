@@ -63,7 +63,8 @@ func RateMiddleware(limiter *logic.Limiter) gin.HandlerFunc {
 		timeDur, _ := time.ParseDuration(limiter.Dur)
 		if !limiter.Allow(c.ClientIP(), limiter.Count, timeDur) {
 			c.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{
-				"error": "too many requests",
+				"code": 429,
+				"message": "too many requests from the same IP address",
 			})
 			log.Println("too many requests")
 			return
