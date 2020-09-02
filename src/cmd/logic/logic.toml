@@ -7,3 +7,9 @@
 [Kafka]
     Topic = "bdim"
     Brokers = ["localhost:9092"]
+[MySql]
+    Username = "root"
+    Password = "test1234"
+    Hostname = "localhost"
+    Port = "3306"
+    Database = "test"

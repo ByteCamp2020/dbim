@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"fmt"
+	"strconv"
 )
 
 type Dao struct {
@@ -75,6 +76,53 @@ func (d *Dao) AddMessage(uid string, roomid int32, msg string, timestamp int32, 
 	}
 }
 
-func (d *Dao) GetMessage(uid string, roomid int32, timestamp int32, visible bool) {
+func (d *Dao) GetMessage(uid string, roomid int32, timestamp int32) {
+	query, args := GetArg(uid, strconv.Itoa(int(roomid)), strconv.Itoa(int(timestamp)))
+	rows, err := d.conn.Query(query, args)
+	if err != nil {
+		fmt.Printf("query failed, err:%v\n", err)
+		return
+	}
+	defer rows.Close()
 
+/*	for rows.Next() {
+		var u user
+		err := rows.Scan(&u.id, &u.name, &u.age)
+		if err != nil {
+			fmt.Printf("scan failed, err:%v\n", err)
+			return
+		}
+		fmt.Printf("id:%d name:%s age:%d\n", u.id, u.name, u.age)
+	}*/
+}
+
+func GetArg(uid string, roomid string, timestamp string) (string, []interface{}) {
+	args := make([]interface{}, 0)
+	//query := "select id, uid, roomid, msg, timestamp, visible from message"
+	query := "select * from message "
+	if uid == "" && roomid == "" && timestamp == "" {
+		return query, nil
+	}
+	query = query + " where "
+	if uid != "" {
+		query += "uid = ?"
+		args = append(args, uid)
+	}
+	if roomid != "" {
+		if len(args) > 0 {
+			query += " AND roomid = ?"
+		} else {
+			query += "roomid = ?"
+		}
+		args = append(args, roomid)
+	}
+	if timestamp != "" {
+		if len(args) > 0 {
+			query += " AND timestamp = ?"
+		} else {
+			query += "timestamp = ?"
+		}
+		args = append(args, timestamp)
+	}
+	return query, args
 }

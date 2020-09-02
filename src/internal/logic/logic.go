@@ -2,6 +2,8 @@ package logic
 
 import (
 	pb "bdim/src/api/logic/grpc"
+	conf2 "bdim/src/internal/dbworker/conf"
+	"bdim/src/internal/dbworker/dao"
 	"bdim/src/internal/logic/conf"
 	"context"
 	"google.golang.org/protobuf/proto"
@@ -15,6 +17,7 @@ type Logic struct {
 	kafkaPub kafka.SyncProducer
 	DFA      *DFAUtil
 	Limiter  *Limiter
+	Dao      *dao.Dao
 }
 
 // New init
@@ -23,6 +26,7 @@ func New(c *conf.Config) (l *Logic) {
 		c:        c,
 		kafkaPub: newKafkaPub(c.Kafka),
 		DFA:      NewDFAUtil(c.WordList),
+		Dao:      dao.New((*conf2.MySql)(c.MySql)),
 	}
 	return l
 }

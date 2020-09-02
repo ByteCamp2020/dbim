@@ -75,6 +75,15 @@ type Config struct {
 	HTTPServer *HTTPServer
 	Kafka      *Kafka
 	WordList   []string
+	MySql      *MySql
+}
+
+type MySql struct {
+	Username string
+	Password string
+	Hostname string
+	Port     string
+	Database string
 }
 
 // HTTPServer is http server config.
