@@ -1,7 +1,7 @@
 package conf
 
 import (
-	"fmt"
+	"bdim/src/models/log"
 	"os"
 	"strconv"
 	"strings"
@@ -51,7 +51,7 @@ func Init() (err error) {
 	Conf.HTTPServer.Addr = httpAddr
 	Conf.HTTPServer.IsLimit = isLimit
 	//_, err = toml.DecodeFile(confPath, &Conf)
-	fmt.Println(Conf.Kafka)
+	log.Print(Conf.Kafka)
 	return
 }
 

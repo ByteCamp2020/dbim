@@ -2,6 +2,7 @@ package logic
 
 import (
 	"bdim/src/internal/logic/conf"
+	"bdim/src/models/log"
 	"database/sql"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
@@ -43,7 +44,7 @@ func (d *dbc) CreateTable (table string) error {
     PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;`
 
-	fmt.Println("\n" + sql + "\n")
+	log.Print("\n" + sql + "\n")
 	smt, _ := d.conn.Prepare(sql)
 	_, err := smt.Exec()
 	if (err != nil) {
@@ -71,7 +72,7 @@ func (d *dbc) GetMessage(uid string, roomid string, timestamp string) ([]Message
 		rows, err = d.conn.Query(query, args...)
 	}
 	if err != nil {
-		fmt.Printf("query failed, err:%v\n", err)
+		log.Print(fmt.Sprintf("query failed, err:%v\n", err))
 		return nil, err
 	}
 	defer rows.Close()
@@ -83,7 +84,7 @@ func (d *dbc) GetMessage(uid string, roomid string, timestamp string) ([]Message
 
 		err := rows.Scan(&u.Id, &u.Uid, &u.Roomid, &u.Msg, &u.Timestamp, &u.Visible)
 		if err != nil {
-			fmt.Printf("scan failed, err:%v\n", err)
+			log.Print(fmt.Sprintf("scan failed, err:%v\n", err))
 			return nil, err
 		}
 		res = append(res, u)

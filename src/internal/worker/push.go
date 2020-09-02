@@ -24,7 +24,7 @@ func (w *Worker) broadcastRoomRawBytes(roomID int32, body []byte) (err error) {
 	}
 	comets := w.cometServers
 	for serverID, c := range comets {
-		fmt.Printf("c.BroadcastRoom(%v) roomID:%d serverID:%s\n", args.Body, roomID, serverID)
+		log.Print(fmt.Sprintf("c.BroadcastRoom(%v) roomID:%d serverID:%s\n", args.Body, roomID, serverID))
 		if err = c.BroadcastRoom(&args); err != nil {
 			log.Error(fmt.Sprintf("c.BroadcastRoom(%v) roomID:%v serverID:%s ", args.Body, roomID, serverID), err)
 		}

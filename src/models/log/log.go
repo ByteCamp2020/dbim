@@ -2,6 +2,7 @@ package log
 
 import (
 	"fmt"
+	"log"
 	"os"
 )
 
@@ -20,11 +21,17 @@ func init() {
 
 func Error(s string, err error) {
 	if debug == true {
-		fmt.Println(s, err)
+		log.Print(s, err)
 	}
 }
 
 func Info(s string, err error) {
+	if debug == true {
+		log.Println(s)
+	}
+}
+
+func Print (s ...interface{}) {
 	if debug == true {
 		fmt.Println(s)
 	}

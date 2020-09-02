@@ -44,7 +44,7 @@ func (w *DbWorker) Close() error {
 	if w.dao != nil {
 		err := w.dao.Close()
 		if err != nil {
-			fmt.Println("DbWorker: Close db err", err)
+			log.Print("DbWorker: Close db err", err)
 		}
 	}
 	if w.consumer != nil {
@@ -72,7 +72,7 @@ func (w *DbWorker) Consume() {
 				log.Error(fmt.Sprintf("proto.Unmarshal(%v) ", mesg), err)
 				continue
 			}
-			fmt.Println("receive", msg)
+			log.Print("receive ",msg)
 			message := string(mesg.Pm.Msg)
 			w.dao.AddMessage(mesg.Pm.User, mesg.Pm.Roomid, message, mesg.Timestamp, mesg.Visible)
 			log.Info(fmt.Sprintf("Dao:consume: %s/%d/%d\t%s\t%+v", msg.Topic, msg.Partition, msg.Offset, msg.Key, mesg),nil)

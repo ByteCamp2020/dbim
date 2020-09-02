@@ -56,7 +56,7 @@ func (w *Worker) Close() error {
 
 // Consume messages, watch signals
 func (w *Worker) Consume() {
-	fmt.Println("Consuming")
+	log.Print("Consuming")
 	for {
 		select {
 		case err := <-w.consumer.Errors():
@@ -70,13 +70,13 @@ func (w *Worker) Consume() {
 			w.consumer.MarkOffset(msg, "")
 			// process push message
 			mesg := new(pb.Msg)
-			fmt.Println("Receive!")
+			log.Print("Receive!")
 			if err := proto.Unmarshal(msg.Value, mesg); err != nil {
 				log.Error("proto.Unmarshal err", err)
 				continue
 			}
 			pushMsg := mesg.Pm
-			fmt.Println("receive", pushMsg)
+			log.Print("receive", pushMsg)
 			if err := w.push(context.Background(), pushMsg); err != nil {
 				log.Error("w.push err", err)
 			}
@@ -88,7 +88,7 @@ func (w *Worker) Consume() {
 func (w *Worker) initComet(c *conf.Discovery) {
 	dis := discovery.NewDiscovery(c.RedisAddr)
 	cometAddrs := dis.GetCometAddr()
-	fmt.Println(cometAddrs)
+	log.Print(cometAddrs)
 	for _, addr := range cometAddrs {
 		cmt, _ := NewComet(addr, w.c.Comet)
 		w.cometServers[addr] = cmt

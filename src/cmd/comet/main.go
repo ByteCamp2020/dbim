@@ -36,7 +36,7 @@ func main() {
 	grpcServer := grpc.New(cfg.RPCServer, c)
 	// register
 	d := discovery.NewDiscovery(cfg.Discovery.RedisAddr)
-	fmt.Println("Registering grpc server, add:",cfg.RPCServer.RegAddr)
+	log.Print("Registering grpc server, add: " + cfg.RPCServer.RegAddr)
 	d.RegComet(cfg.RPCServer.RegAddr)
 	defer d.DelComet(cfg.RPCServer.RegAddr)
 	ch := make(chan os.Signal, 1)
