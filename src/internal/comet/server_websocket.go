@@ -110,14 +110,22 @@ func serveHTTP(w http.ResponseWriter, r *http.Request) {
 			return true
 		},
 	}
-	roomid, err := strconv.ParseInt(r.URL.Query()["roomid"][0], 10, 32)
+	temprid := r.URL.Query()["roomid"]
+	if (len(temprid) < 1) {
+		glog.Error("Args wrong", fmt.Errorf("roomid wrong"))
+		return
+	}
+
+	roomid, err := strconv.ParseInt(temprid[0], 10, 32)
 	if err != nil {
 		glog.Error("Args wrong", err)
+		return
 	}
 	conn, err := upgrade.Upgrade(w, r, nil)
 	if err != nil {
 		fmt.Println(err)
 		glog.Error("Upgrade fail", err)
+		return
 	}
 	register := &Register{
 		conn:   conn,
