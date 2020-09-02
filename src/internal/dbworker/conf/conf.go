@@ -31,11 +31,11 @@ func Init() (err error) {
 func Default() *Config {
 	return &Config{
 		MySql: &MySql{
-			Username: "",
-			Password: "",
-			Hostname: "",
-			Port:     "",
-			Database: "",
+			Username: "root",
+			Password: "test1234",
+			Hostname: "localhost",
+			Port:     "3306",
+			Database: "test",
 		},
 		Kafka: &Kafka{
 			Topic:   "test",

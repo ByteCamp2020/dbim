@@ -1,9 +1,10 @@
 [MySql]
-Username = ""
-Password = ""
-Hostname = ""
-Port = ""
-Database = ""
+Username = "root"
+Password = "test1234"
+Hostname = "localhost"
+Port = "3306"
+Database = "test"
+
 [Kafka]
 Topic = "bdim"
 Group = "bdim-dbworker"
