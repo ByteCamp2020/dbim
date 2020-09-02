@@ -28,10 +28,9 @@ func errors(c *gin.Context, code int, msg string) {
 	})
 }
 
-func result(c *gin.Context, msg string, code int) {
+func result(c *gin.Context, code int) {
 	c.Set(contextErrCode, code)
 	c.JSON(200, resp{
 		Code: code,
-		Message: msg,
 	})
 }

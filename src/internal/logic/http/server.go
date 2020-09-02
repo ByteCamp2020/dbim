@@ -90,5 +90,5 @@ func (s *Server) push(c *gin.Context) {
 		errors(c, ServerErr, err.Error())
 		return
 	}
-	result(c, "send success", OK)
+	result(c,  OK)
 }
