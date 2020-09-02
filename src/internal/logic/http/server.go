@@ -81,8 +81,8 @@ func (s *Server) push(c *gin.Context) {
 	}
 	// user limit
 	timestamp := int32(time.Now().Unix())
-	if s.logic.Limiter.UserLimit(arg.User) == false {
-		errors(c, http.StatusTooManyRequests, "too many requests")
+	if s.logic.Limiter != nil && s.logic.Limiter.UserLimit(arg.User) == false {
+		errors(c, http.StatusTooManyRequests, "too many requests from the same user")
 		return
 	}
 
@@ -90,5 +90,5 @@ func (s *Server) push(c *gin.Context) {
 		errors(c, ServerErr, err.Error())
 		return
 	}
-	result(c, nil, OK)
+	result(c,  OK)
 }
