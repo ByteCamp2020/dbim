@@ -1,3 +1,4 @@
+ARG input
 FROM golang
-ADD main /main
-CMD ["/main"]
+ADD comet /comet
+CMD /comet
