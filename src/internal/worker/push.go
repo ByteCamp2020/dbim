@@ -6,8 +6,7 @@ import (
 
 	comet "bdim/src/api/comet/grpc"
 	pb "bdim/src/api/logic/grpc"
-
-	log "github.com/golang/glog"
+	"bdim/src/models/log"
 )
 
 const opRaw = int32(0)
@@ -25,11 +24,11 @@ func (w *Worker) broadcastRoomRawBytes(roomID int32, body []byte) (err error) {
 	}
 	comets := w.cometServers
 	for serverID, c := range comets {
-		fmt.Printf("c.BroadcastRoom(%v) roomID:%d serverID:%s\n", args.Body, roomID, serverID)
+		log.Print(fmt.Sprintf("c.BroadcastRoom(%v) roomID:%d serverID:%s\n", args.Body, roomID, serverID))
 		if err = c.BroadcastRoom(&args); err != nil {
-			log.Errorf("c.BroadcastRoom(%v) roomID:%v serverID:%s error(%v)", args.Body, roomID, serverID, err)
+			log.Error(fmt.Sprintf("c.BroadcastRoom(%v) roomID:%v serverID:%s ", args.Body, roomID, serverID), err)
 		}
 	}
-	log.Infof("broadcastRoom comets:%d", len(comets))
+	log.Info(fmt.Sprintf("broadcastRoom comets:%d", len(comets)), nil)
 	return
 }

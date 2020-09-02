@@ -3,8 +3,9 @@ package main
 import (
 	"bdim/src/internal/dbworker"
 	"bdim/src/internal/dbworker/conf"
+	"bdim/src/models/log"
 	"flag"
-	log "github.com/golang/glog"
+	"fmt"
 	"os"
 	"os/signal"
 	"runtime"
@@ -18,7 +19,7 @@ func main() {
 		panic(err)
 	}
 	c := conf.Conf
-	log.Infof("DbWorker: Starting dbworker, cfg:%v", c)
+	log.Info(fmt.Sprintf("DbWorker: Starting dbworker, cfg:%v", c),nil)
 	dbWorker := dbworker.New(c)
 	go dbWorker.Consume()
 
@@ -28,6 +29,6 @@ func main() {
 
 	err := dbWorker.Close()
 	if err != nil {
-		log.Errorf("Failed to close consumer: %v", err)
+		log.Error("Failed to close consumer: %v", err)
 	}
 }

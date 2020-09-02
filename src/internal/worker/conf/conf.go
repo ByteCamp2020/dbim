@@ -1,8 +1,8 @@
 package conf
 
 import (
+	"bdim/src/models/log"
 	xtime "bdim/src/pkg/time"
-	"fmt"
 	"os"
 	"time"
 )
@@ -35,7 +35,7 @@ func Init() (err error) {
 	Conf.Kafka.Topic = topic
 	Conf.Kafka.Brokers = brokers
 	Conf.Kafka.Group = group
-	fmt.Println(Conf.Kafka)
+	log.Print(Conf.Kafka)
 	return
 }
 

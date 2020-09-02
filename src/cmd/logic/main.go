@@ -4,8 +4,9 @@ import (
 	"bdim/src/internal/logic"
 	"bdim/src/internal/logic/conf"
 	"bdim/src/internal/logic/http"
+	"bdim/src/models/log"
 	"flag"
-	log "github.com/golang/glog"
+	"fmt"
 	"os"
 	"os/signal"
 	"runtime"
@@ -23,7 +24,7 @@ func main() {
 	if err := conf.Init(); err != nil {
 		panic(err)
 	}
-	log.Infof("bdim-logic [version: %s env: %+v] start", ver, conf.Conf)
+	log.Info(fmt.Sprintf("bdim-logic [version: %s env: %+v] start", ver, conf.Conf),nil)
 
 	// logic
 	srv := logic.New(conf.Conf)
@@ -35,13 +36,13 @@ func main() {
 	signal.Notify(c, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)
 	for {
 		s := <-c
-		log.Infof("bdim-logic get a signal %s", s.String())
+
+		log.Info(fmt.Sprintf("bdim-logic get a signal %s", s.String()), nil)
 		switch s {
 		case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT:
 			srv.Close()
 			httpSrv.Close()
-			log.Infof("bdim-logic [version: %s] exit", ver)
-			log.Flush()
+			log.Info(fmt.Sprintf("bdim-logic [version: %s] exit", ver),nil)
 			return
 		case syscall.SIGHUP:
 		default:

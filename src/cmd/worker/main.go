@@ -3,8 +3,9 @@ package main
 import (
 	"bdim/src/internal/worker"
 	"bdim/src/internal/worker/conf"
+	"bdim/src/models/log"
 	"flag"
-	log "github.com/golang/glog"
+	"fmt"
 	"os"
 	"os/signal"
 	"runtime"
@@ -21,7 +22,7 @@ func main() {
 	if err := conf.Init(); err != nil {
 		panic(err)
 	}
-	log.Infof("bdim-worker start")
+	log.Info("bdim-worker start", nil)
 
 	// worker
 	w := worker.New(conf.Conf)
@@ -32,12 +33,11 @@ func main() {
 
 	for {
 		s := <-c
-		log.Infof("bdim-worker get a signal %s", s.String())
+		log.Info(fmt.Sprintf("bdim-worker get a signal %s", s.String()),nil)
 		switch s {
 		case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT:
 			w.Close()
-			log.Infof("bdim-worker [version: %s] exit", ver)
-			log.Flush()
+			log.Info(fmt.Sprintf("bdim-worker [version: %s] exit", ver),nil)
 			return
 		case syscall.SIGHUP:
 		default:

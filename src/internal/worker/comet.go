@@ -3,12 +3,12 @@ package worker
 import (
 	comet "bdim/src/api/comet/grpc"
 	"bdim/src/internal/worker/conf"
+	"bdim/src/models/log"
 	"context"
 	"fmt"
 	"sync/atomic"
 	"time"
 
-	log "github.com/golang/glog"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
 )
@@ -102,7 +102,7 @@ func (c *Comet) process(roomChan chan *comet.Package) {
 			Body:   roomArg.Body,
 		})
 		if err != nil {
-			log.Errorf("c.client.BroadcastRoom(%s, reply) serverId:%s error(%v)", roomArg, c.serverID, err)
+			log.Error(fmt.Sprintf("c.client.BroadcastRoom(%s, reply) serverId:%s ", roomArg, c.serverID),err)
 		}
 	}
 
@@ -126,7 +126,7 @@ func (c *Comet) Close() (err error) {
 	}()
 	select {
 	case <-finish:
-		log.Info("close comet finish")
+		log.Info("close comet finish", nil)
 	case <-time.After(5 * time.Second):
 		err = fmt.Errorf("close comet(server:%s room:%d) timeout", c.serverID, len(c.roomChan))
 	}

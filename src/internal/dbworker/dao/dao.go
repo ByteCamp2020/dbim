@@ -2,6 +2,7 @@ package dao
 
 import (
 	"bdim/src/internal/dbworker/conf"
+	"bdim/src/models/log"
 	"database/sql"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
@@ -43,7 +44,6 @@ func (d *Dao) CreateTable (table string) error {
     PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;`
 
-	fmt.Println("\n" + sql + "\n")
 	smt, _ := d.conn.Prepare(sql)
 	_, err := smt.Exec()
 	if (err != nil) {
@@ -68,9 +68,9 @@ func (d *Dao) AddMessage(uid string, roomid int32, msg string, timestamp int32, 
 
 	}
 	if LastInsertId, err := ret.LastInsertId(); nil == err {
-		fmt.Println("Dao.mySql:LastInsertId:", LastInsertId)
+		log.Print("Dao.mySql:LastInsertId:", LastInsertId)
 	}
 	if RowsAffected, err := ret.RowsAffected(); nil == err {
-		fmt.Println("Dao.mySql:RowsAffected:", RowsAffected)
+		log.Print("Dao.mySql:RowsAffected:", RowsAffected)
 	}
 }

@@ -2,8 +2,8 @@ package comet
 
 import (
 	"bdim/src/internal/comet/conf"
+	"bdim/src/models/log"
 	"fmt"
-	"github.com/golang/glog"
 	"github.com/gorilla/websocket"
 	"net/http"
 	"strconv"
@@ -51,7 +51,7 @@ func NewClient(conn *websocket.Conn, c *Channel, roomID int32) *Client {
 func (c *Client) pushProc() {
 	for {
 		info := c.channel.Listen()
-		fmt.Println(info)
+		log.Print(info)
 		err := c.conn.WriteMessage(websocket.BinaryMessage, info.Body)
 		if err != nil {
 			return
@@ -63,7 +63,7 @@ func (cm *ClientManager) watch(c *Client) {
 	for {
 		_, _, err := c.conn.ReadMessage()
 		if err != nil {
-			fmt.Println("delected found,", err)
+			log.Print("delected found,", err)
 			cm.del(c)
 			return
 		}
@@ -78,7 +78,7 @@ func (cm *ClientManager) registerPros() {
 	for {
 		register := <-registerCh
 		// new channel
-		fmt.Println(len(registerCh))
+		log.Print(len(registerCh))
 
 		ch := NewChannel()
 		cm.comet.Put(ch, register.roomID)
@@ -93,7 +93,7 @@ func (cm *ClientManager) del(c *Client) {
 }
 
 func StartWebSocket(addr string) {
-	fmt.Println("start listening")
+	log.Print("start listening")
 	http.HandleFunc("/push", serveHTTP)
 	http.ListenAndServe(addr, nil)
 }
@@ -108,26 +108,26 @@ func serveHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	temprid := r.URL.Query()["roomid"]
 	if (len(temprid) < 1) {
-		glog.Error("Args wrong", fmt.Errorf("roomid wrong"))
+		log.Error("Args wrong", fmt.Errorf("roomid wrong"))
 		return
 	}
 
 	roomid, err := strconv.ParseInt(temprid[0], 10, 32)
 	if err != nil {
-		glog.Error("Args wrong", err)
+		log.Error("Args wrong", err)
 		return
 	}
 	conn, err := upgrade.Upgrade(w, r, nil)
 	if err != nil {
-		fmt.Println(err)
-		glog.Error("Upgrade fail", err)
+		log.Print(err)
+		log.Error("Upgrade fail", err)
 		return
 	}
 	register := &Register{
 		conn:   conn,
 		roomID: int32(roomid),
 	}
-	fmt.Printf("New connect to Room%v\n", roomid)
-	fmt.Println(len(registerCh))
+	log.Print(fmt.Sprintf("New connect to Room%v\n", roomid))
+	log.Print(len(registerCh))
 	registerCh <- register
 }

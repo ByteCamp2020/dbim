@@ -3,11 +3,12 @@ package worker
 import (
 	"bdim/src/pkg/bytes"
 	"errors"
+	"fmt"
 	"time"
 
 	comet "bdim/src/api/comet/grpc"
 	"bdim/src/internal/worker/conf"
-	log "github.com/golang/glog"
+	"bdim/src/models/log"
 )
 
 var (
@@ -58,7 +59,7 @@ func (r *Room) pushproc(batch int, sigTime time.Duration) {
 		p    *comet.Package
 		buf  = bytes.NewWriterSize(int(comet.MaxBodySize))
 	)
-	log.Infof("start room:%v goroutine", r.id)
+	log.Info(fmt.Sprintf("start room:%v goroutine", r.id), nil)
 	td := time.AfterFunc(sigTime, func() {
 		select {
 		case r.pack <- roomReadyPackage:
@@ -98,7 +99,7 @@ func (r *Room) pushproc(batch int, sigTime time.Duration) {
 		}
 	}
 	r.worker.delRoom(r.id)
-	log.Infof("room:%v goroutine exit", r.id)
+	log.Info(fmt.Sprintf("room:%v goroutine exit", r.id), nil)
 }
 
 func (w *Worker) delRoom(roomID int32) {
@@ -118,7 +119,7 @@ func (w *Worker) getRoom(roomID int32) *Room {
 			w.rooms[roomID] = room
 		}
 		w.roomsMutex.Unlock()
-		log.Infof("new a room:%v active:%d", roomID, len(w.rooms))
+		log.Info(fmt.Sprint("new a room:%v active:%d", roomID, len(w.rooms)),nil )
 	}
 	return room
 }

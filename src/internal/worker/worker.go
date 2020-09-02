@@ -8,9 +8,9 @@ import (
 	"sync"
 
 	"bdim/src/models/discovery"
+	"bdim/src/models/log"
 	cluster "github.com/bsm/sarama-cluster"
 	"google.golang.org/protobuf/proto"
-	log "github.com/golang/glog"
 )
 
 // Worker is push Worker.
@@ -56,13 +56,13 @@ func (w *Worker) Close() error {
 
 // Consume messages, watch signals
 func (w *Worker) Consume() {
-	fmt.Println("Consuming")
+	log.Print("Consuming")
 	for {
 		select {
 		case err := <-w.consumer.Errors():
-			log.Errorf("consumer error(%v)", err)
+			log.Error("consumer error", err)
 		case n := <-w.consumer.Notifications():
-			log.Infof("consumer rebalanced(%v)", n)
+			log.Info(fmt.Sprintf("consumer rebalanced(%v)", n), nil)
 		case msg, ok := <-w.consumer.Messages():
 			if !ok {
 				return
@@ -70,17 +70,17 @@ func (w *Worker) Consume() {
 			w.consumer.MarkOffset(msg, "")
 			// process push message
 			mesg := new(pb.Msg)
-			fmt.Println("Receive!")
+			log.Print("Receive!")
 			if err := proto.Unmarshal(msg.Value, mesg); err != nil {
-				log.Errorf("proto.Unmarshal(%v) error(%v)", msg, err)
+				log.Error("proto.Unmarshal err", err)
 				continue
 			}
 			pushMsg := mesg.Pm
-			fmt.Println("receive", pushMsg)
+			log.Print("receive", pushMsg)
 			if err := w.push(context.Background(), pushMsg); err != nil {
-				log.Errorf("w.push(%v) error(%v)", pushMsg, err)
+				log.Error("w.push err", err)
 			}
-			log.Infof("consume: %s/%d/%d\t%s\t%+v", msg.Topic, msg.Partition, msg.Offset, msg.Key, pushMsg)
+			log.Info(fmt.Sprintf("consume: %s/%d/%d\t%s\t%+v", msg.Topic, msg.Partition, msg.Offset, msg.Key, pushMsg), nil)
 		}
 	}
 }
@@ -88,7 +88,7 @@ func (w *Worker) Consume() {
 func (w *Worker) initComet(c *conf.Discovery) {
 	dis := discovery.NewDiscovery(c.RedisAddr)
 	cometAddrs := dis.GetCometAddr()
-	fmt.Println(cometAddrs)
+	log.Print(cometAddrs)
 	for _, addr := range cometAddrs {
 		cmt, _ := NewComet(addr, w.c.Comet)
 		w.cometServers[addr] = cmt

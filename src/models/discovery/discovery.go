@@ -1,7 +1,7 @@
 package discovery
 
 import (
-	"fmt"
+	"bdim/src/models/log"
 	"github.com/go-redis/redis"
 )
 
@@ -10,16 +10,16 @@ type Discovery struct {
 }
 
 func NewDiscovery(redisAddr string) *Discovery {
-	fmt.Println("Redis addr", redisAddr)
+	log.Print("Redis addr", redisAddr)
 	opts, err := redis.ParseURL(redisAddr)
 	if err != nil {
-		fmt.Println(err)
+		log.Print(err)
 		return nil
 	}
-	fmt.Println(opts)
+	log.Print(opts)
 	rc := redis.NewClient(opts)
 	if err := rc.Ping().Err(); err != nil {
-		fmt.Println(err)
+		log.Print(err)
 		return nil
 	}
 	d := &Discovery{conn: rc}
@@ -42,7 +42,7 @@ func (d *Discovery) RegComet(addr string) {
 	pipe.RPush("cometlist", addr)
 	_, err := pipe.Exec()
 	if err != nil {
-		fmt.Println("Register comet failed")
+		log.Print("Register comet failed")
 	}
 }
 
@@ -51,6 +51,6 @@ func (d *Discovery) DelComet(addr string) {
 	pipe.LRem("cometlist", 1, addr)
 	_, err := pipe.Exec()
 	if err != nil {
-		fmt.Println("Del comet failed", err)
+		log.Print("Del comet failed", err)
 	}
 }
