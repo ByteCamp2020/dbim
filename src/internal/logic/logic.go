@@ -4,8 +4,8 @@ import (
 	pb "bdim/src/api/logic/grpc"
 	"bdim/src/internal/logic/conf"
 	"context"
-	"google.golang.org/protobuf/proto"
 	log "github.com/golang/glog"
+	"google.golang.org/protobuf/proto"
 	kafka "gopkg.in/Shopify/sarama.v1"
 )
 
@@ -15,6 +15,7 @@ type Logic struct {
 	kafkaPub kafka.SyncProducer
 	DFA      *DFAUtil
 	Limiter  *Limiter
+	DbC      *dbc
 }
 
 // New init
@@ -23,6 +24,7 @@ func New(c *conf.Config) (l *Logic) {
 		c:        c,
 		kafkaPub: newKafkaPub(c.Kafka),
 		DFA:      NewDFAUtil(c.WordList),
+		DbC:      NewDbC(c.MySql),
 	}
 	return l
 }

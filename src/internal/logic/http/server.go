@@ -1,11 +1,13 @@
 package http
 
+import "C"
 import (
 	"bdim/src/internal/logic"
 	"bdim/src/internal/logic/conf"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -46,6 +48,7 @@ func (s *Server) initRouter() {
 	group := s.engine.Group("/bdim")
 	group.GET("/test", s.test)
 	group.POST("/push", s.push)
+	group.GET("query", s.query)
 }
 
 // Close close the server.
@@ -91,4 +94,32 @@ func (s *Server) push(c *gin.Context) {
 		return
 	}
 	result(c,  OK)
+}
+
+
+func (s *Server) query (c *gin.Context) {
+	uid := c.Query("uid")
+	roomid := c.Query("roomid")
+	timestamp := c.Query("timestamp")
+	if roomid != "" {
+		_, err := strconv.Atoi(roomid)
+		if err != nil {
+			errors(c, RequestErr, err.Error())
+			return
+		}
+	}
+	if timestamp != "" {
+		_, err := strconv.Atoi(timestamp)
+		if err != nil {
+			errors(c, RequestErr, err.Error())
+			return
+		}
+	}
+	res, err := s.logic.DbC.GetMessage(uid, roomid, timestamp)
+	if err != nil {
+		errors(c, ServerErr, err.Error())
+		return
+	}
+	c.Set(contextErrCode, OK)
+	c.JSON(200, res)
 }

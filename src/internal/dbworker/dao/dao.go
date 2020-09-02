@@ -3,8 +3,8 @@ package dao
 import (
 	"bdim/src/internal/dbworker/conf"
 	"database/sql"
-	_ "github.com/go-sql-driver/mysql"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type Dao struct {
@@ -73,8 +73,4 @@ func (d *Dao) AddMessage(uid string, roomid int32, msg string, timestamp int32, 
 	if RowsAffected, err := ret.RowsAffected(); nil == err {
 		fmt.Println("Dao.mySql:RowsAffected:", RowsAffected)
 	}
-}
-
-func (d *Dao) GetMessage(uid string, roomid int32, timestamp int32, visible bool) {
-
 }
