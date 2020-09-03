@@ -12,7 +12,7 @@ import (
 
 // Logic struct
 type Logic struct {
-	c        *conf.Config
+	C        *conf.Config
 	kafkaPub kafka.SyncProducer
 	DFA      *DFAUtil
 	Limiter  *Limiter
@@ -22,10 +22,12 @@ type Logic struct {
 // New init
 func New(c *conf.Config) (l *Logic) {
 	l = &Logic{
-		c:        c,
+		C:        c,
 		kafkaPub: newKafkaPub(c.Kafka),
-		DFA:      NewDFAUtil(c.WordList),
 		DbC:      NewDbC(c.MySql),
+	}
+	if c.HTTPServer.IsForbidden == 1 {
+		l.DFA = NewDFAUtil(c.WordList)
 	}
 	return l
 }
@@ -64,7 +66,7 @@ func (l *Logic) PushRoom(c context.Context, room int32, user string, timestamp i
 	}
 	m := &kafka.ProducerMessage{
 		Key:   kafka.StringEncoder(room),
-		Topic: l.c.Kafka.Topic,
+		Topic: l.C.Kafka.Topic,
 		Value: kafka.ByteEncoder(b),
 	}
 	if _, _, err = l.kafkaPub.SendMessage(m); err != nil {

@@ -14,6 +14,7 @@ var (
 	confPath string
 	httpAddr string
 	isLimit bool
+	isForbiddenWord int
 	redisAddr string
 	count int
 	dur string
@@ -31,6 +32,7 @@ func init() {
 	} else {
 		isLimit = false
 	}
+	isForbiddenWord, _ = strconv.Atoi(os.Getenv("OPEN_FORBIDDEN_WORD"))
 	count, _ = strconv.Atoi(os.Getenv("COUNT"))
 	dur = os.Getenv("DURATION")
 	redisAddr = "redis://10.108.21.18:6379"
@@ -50,6 +52,7 @@ func Init() (err error) {
 	Conf.HTTPServer.Dur = dur
 	Conf.HTTPServer.Addr = httpAddr
 	Conf.HTTPServer.IsLimit = isLimit
+	Conf.HTTPServer.IsForbidden = isForbiddenWord
 	//_, err = toml.DecodeFile(confPath, &Conf)
 	log.Print(Conf.Kafka)
 	return
@@ -97,6 +100,7 @@ type HTTPServer struct {
 	ReadTimeout  time.Duration
 	WriteTimeout time.Duration
 	IsLimit      bool
+	IsForbidden  int
 	RedisAddr    string
 	Count        int64
 	Dur          string
