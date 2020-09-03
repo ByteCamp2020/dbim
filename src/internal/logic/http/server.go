@@ -77,7 +77,7 @@ func (s *Server) push(c *gin.Context) {
 		return
 	}
 	// check the forbidden words
-	if s.logic.DFA.CheckSentence(string(msg)) == false {
+	if (s.logic.C.HTTPServer.IsForbidden == 1 && s.logic.DFA != nil ) && s.logic.DFA.CheckSentence(string(msg)) == false {
 		errors(c, RequestErr, "forbidden word")
 		return
 	}
