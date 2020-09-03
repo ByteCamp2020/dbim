@@ -24,7 +24,7 @@ var (
 
 func init() {
 	host, _ = os.Hostname()
-	httpAddr = "httpAddr"
+	httpAddr = "0.0.0.0:2333"
 	isFilter, _ := strconv.Atoi(os.Getenv("OPEN_FILTER"))
 	if isFilter == 1 {
 		isLimit = true
@@ -50,7 +50,6 @@ func Init() (err error) {
 	Conf.HTTPServer.Dur = dur
 	Conf.HTTPServer.Addr = httpAddr
 	Conf.HTTPServer.IsLimit = isLimit
-	//_, err = toml.DecodeFile(confPath, &Conf)
 	log.Print(Conf.Kafka)
 	return
 }
@@ -71,6 +70,13 @@ func Default() *Config {
 			Brokers: []string{"localhost:9092"},
 		},
 		WordList: wordList,
+		MySql: &MySql{
+			Username: "wyb",
+			Password: "123456",
+			Hostname: "10.108.21.19",
+			Port:     "3306",
+			Database: "test",
+		},
 	}
 }
 

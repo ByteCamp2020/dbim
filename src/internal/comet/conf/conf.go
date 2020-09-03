@@ -62,17 +62,11 @@ func Default() *Config {
 
 func Init() *Config {
 	cfg := Default()
-	//fmt.Println(confPath)
-
-	//if _, err := toml.DecodeFile(confPath, &tp); err != nil {
-	//	fmt.Println(err)
-	//}
-	log.Print(tp)
 	cfg.WebSocket.WsAddr = tp.WsAddr
 	cfg.RPCServer.Addr = tp.RPCAddr
 	cfg.RPCServer.RegAddr = tp.RPCRegAddr
 	cfg.Discovery.RedisAddr = tp.RedisAddr
-
+	log.Print(tp)
 	return cfg
 }
 

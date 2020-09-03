@@ -22,3 +22,4 @@ image:
 	docker build -t comet dep/comet
 	docker build -t logic dep/logic
 	docker build -t worker dep/worker
+	docker build -t dbworker dep/dbworker

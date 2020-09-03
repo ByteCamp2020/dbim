@@ -1,28 +1,25 @@
 package conf
 
 import (
-	"flag"
-	"github.com/BurntSushi/toml"
 	"log"
 	"os"
 )
 
 var (
 	Conf     *Config
-	confPath string
 	host     string
 )
 
 func init() {
 	host, _ = os.Hostname()
-	flag.StringVar(&confPath, "conf", "comet.conf", "comet config path")
+	//flag.StringVar(&confPath, "conf", "comet.conf", "comet config path")
 }
 
 // Init init config.
 func Init() (err error) {
 	Conf = Default()
 
-	_, err = toml.DecodeFile(confPath, &Conf)
+	//_, err = toml.DecodeFile(confPath, &Conf)
 	log.Print(Conf)
 	return
 }
@@ -31,16 +28,16 @@ func Init() (err error) {
 func Default() *Config {
 	return &Config{
 		MySql: &MySql{
-			Username: "root",
-			Password: "test1234",
-			Hostname: "localhost",
+			Username: "wyb",
+			Password: "123456",
+			Hostname: "10.108.21.19",
 			Port:     "3306",
 			Database: "test",
 		},
 		Kafka: &Kafka{
-			Topic:   "test",
+			Topic:   "bdim",
 			Group:   "MySqlGroup",
-			Brokers: []string{"localhost:9092"},
+			Brokers: []string{"10.108.21.19:9092"},
 		},
 	}
 }
