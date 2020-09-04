@@ -22,7 +22,7 @@ func init() {
 	host, _ = os.Hostname()
 	redisAddr = "redis://10.108.21.18:6379"
 	group = "bdim-worker"
-	topic = "kafkatopic"
+	topic = "bdim"
 	var broker string
 	broker ="10.108.21.19:9092"
 	brokers = append(brokers, broker)

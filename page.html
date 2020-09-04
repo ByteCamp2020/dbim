@@ -27,6 +27,7 @@ window.addEventListener("load", function(evt) {
             const reader = new FileReader();
             reader.onload = function (event) {
                 var content = reader.result;
+
                 var results = content.split('\n')
                 console.log(results)
                 results.forEach(function (cur, idx, arr) {
@@ -45,11 +46,8 @@ window.addEventListener("load", function(evt) {
         return false;
     };
     document.getElementById("send").onclick = function(evt) {
-        if (!ws) {
-            return false;
-        }
+        httpPost("localhost:2333")
         print("SEND: " + input.value);
-        ws.send(input.value);
         return false;
     };
     document.getElementById("close").onclick = function(evt) {
@@ -59,6 +57,69 @@ window.addEventListener("load", function(evt) {
         ws.close();
         return false;
     };
+    function httpPost() {
+        // 发送ajax
+        // （1） 获取 XMLHttpRequest对象
+        console.log("Initiaing")
+        xmlHttp = new XMLHttpRequest();
+        console.log("clicked!")
+        //  (2) 连接服务器
+        //  get
+        //xmlHttp.open("get","/sendAjax/?a=1&b=2");
+        var message = document.getElementById("input").value
+        console.log(message)
+        //  post
+        xmlHttp.open("post","http://localhost:2333/bdim/push?room=1&user=1");
+
+        // 设置请求头的Content-Type
+        // var ele_csrf=document.getElementsByName("csrfmiddlewaretoken")[0];
+        xmlHttp.setRequestHeader("Content-Type","application/json");
+        //xmlHttp.setRequestHeader("X-CSRFToken",ele_csrf.value);
+
+        xmlHttp.send(message) ;   // 请求体数据
+
+
+        // （4） 回调函数  success
+        xmlHttp.onreadystatechange = function() {
+            if(this.status==200){
+                console.log("responseText",this.responseText)
+
+            }
+        };
+
+        function unPack(input) {
+            var left = 0
+            while (left < input.length) {
+                var mid = left + 4
+                var right = mid + 2
+                var v1 = toInt32(input.slice(left, mid))
+                var v2 = toInt16(input.slice(mid, right))
+                var msglen = v1 - v2
+                var str = input.slice(right, right + msglen)
+                left = right + msglen
+
+            }
+        }
+
+        //构建一个视图，把字节数组写到缓存中，索引从0开始，大端字节序
+        function getView(bytes) {
+            var view = new DataView(new ArrayBuffer(bytes.length));
+            for (var i = 0; i < bytes.length; i++) {
+                view.setUint8(i, bytes[i]);
+            }
+            return view;
+        }
+        //将字节数组转成有符号的16位整型，大端字节序
+        function toInt16(bytes) {
+            return getView(bytes).getInt16();
+        }
+        //将字节数组转成有符号的32位整型，大端字节序
+        function toInt32(bytes) {
+            return getView(bytes).getInt32();
+        }
+
+        }
+    }
 });
 </script>
 </head>
