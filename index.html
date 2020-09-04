@@ -20,6 +20,7 @@
     <div id="my-container" style="width:640px;height:360px;"></div>
 </div>
 <button id="open">Open</button>
+<button id="close">Close</button>
 <button id="send-button">Send</button>
 
 <!-- <script src="path/to/socket.io.js"></script> -->
@@ -66,10 +67,9 @@
         reader.onload = function (event) {
             var content = reader.result;
             var results = content.split('\n')
+            console.log(typeof(results))
             console.log(results)
             results.forEach(function (cur, idx, arr) {
-                if (idx == 0) {
-                } else {
                     var comment = {
                         text: cur,
                         style: {
@@ -78,7 +78,7 @@
                         },
                     };
                     danmaku.emit(comment)
-                }
+
             })
         }
         reader.readAsText(package)

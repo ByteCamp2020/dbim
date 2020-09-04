@@ -3,6 +3,7 @@ package grpc
 import (
 	"bdim/src/pkg/bytes"
 	"bdim/src/pkg/encoding/binary"
+	"fmt"
 )
 
 const (
@@ -33,6 +34,8 @@ func (p *Package) WriteTo(b *bytes.Writer) {
 		packLen = _rawHeaderSize + int32(len(p.Body))
 		buf     = b.Peek(_rawHeaderSize)
 	)
+	fmt.Println(packLen)
+	fmt.Println(_rawHeaderSize)
 	binary.BigEndian.PutInt32(buf[_packOffset:], packLen)
 	binary.BigEndian.PutInt16(buf[_headerOffset:], int16(_rawHeaderSize))
 	if p.Body != nil {

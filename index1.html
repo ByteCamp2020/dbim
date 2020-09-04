@@ -1,0 +1,176 @@
+<head>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link
+            rel="stylesheet"
+            href="C:/Users/tmp53/Desktop/test/bootcamp.css"
+            crossorigin="anonymous"
+    />
+    <style>
+        @import url("C:/Users/tmp53/Desktop/test/button.css");
+        #danmuarea {
+            position: relative;
+            background: #222;
+            width: 800px;
+            height: 445px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .center {
+            text-align: center;
+        }
+        .ctr {
+            font-size: 1em;
+        }
+        .container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .options {
+            width: 100%;
+            height: fit-content;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+        .my-button {
+            margin: 5px 80px;
+        }
+    </style>
+</head>
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">弹幕</h3>
+        </div>
+        <div class="panel-body">
+            <div id="danmuarea">
+                <div
+                        id="my-container"
+                        style="width: 640px; height: 360px"
+                ></div>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-lg-3">
+                    <button id="open" type="button" class="btn btn-primary">
+                        Open
+                    </button>
+                </div>
+                <div class="col-lg-9">
+                    <div class="input-group">
+                        <input
+                                type="text"
+                                id="input-area"
+                                class="form-control"
+                                placeholder="输入弹幕"
+                        />
+                        <span class="input-group-btn">
+                            <button
+                                    id="send-button"
+                                    class="btn btn-primary"
+                                    type="button"
+                            >
+                                send
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <script src="path/to/socket.io.js"></script> -->
+    <script src="file:C:/Users/tmp53/Desktop/test/danmuku.js"></script>
+    <script>
+        var danmaku = new Danmaku({
+            container: document.getElementById("my-container"),
+        });
+        var btn = document.getElementById("send-button");
+        btn.addEventListener("click", function () {
+
+            var comment = {
+                text: "bla bla",
+                style: {
+                    fontSize: "20px",
+                    color: "#fff00f",
+                },
+            };
+            console.log("233");
+        });
+        var ws;
+        var btn2 = document.getElementById("open");
+        btn2.addEventListener("click", function () {
+            if (ws) {
+                return false;
+            }
+            ws = new WebSocket("ws://10.108.21.48:3101/push?roomid=1");
+            ws.onopen = function (evt) {
+                console.log("ws opened!");
+            };
+            ws.onclose = function (evt) {
+                console.log("ws closed!");
+                ws = null;
+            };
+            ws.onmessage = function (evt) {
+                unpack(evt.data);
+            };
+            ws.onerror = function (evt) {
+                print("ERROR: " + evt.data);
+            };
+            return false;
+        });
+        document.getElementById("close").onclick = function(evt) {
+            if (!ws) {
+                return false;
+            }
+            ws.close();
+            return false;
+        };
+        function unpack(package) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                var content = reader.result;
+                var results = content.split("\n");
+                console.log(results);
+                results.forEach(function (cur, idx, arr) {
+                    if (idx == 0) {
+                    } else {
+                        var comment = {
+                            text: cur,
+                            style: {
+                                fontSize: "20px",
+                                color: "#fff00f",
+                            },
+                        };
+                        danmaku.emit(comment);
+                    }
+                });
+            };
+            reader.readAsText(package);
+        };
+        function httpPost(URL, PARAMS) {
+            var temp = document.createElement("form");
+            temp.action = URL;
+            temp.method = "post";
+            temp.style.display = "none";
+
+            for (var x in PARAMS) {
+                var opt = document.createElement("textarea");
+                opt.name = x;
+                opt.value = PARAMS[x];
+                temp.appendChild(opt);
+            }
+
+            document.body.appendChild(temp);
+            temp.submit();
+
+            return temp;
+        }
+    </script>
+</div>

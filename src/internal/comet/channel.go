@@ -18,7 +18,6 @@ func NewChannel() *Channel {
 		Next:   nil,
 		Prev:   nil,
 	}
-
 	return c
 }
 
@@ -30,6 +29,6 @@ func (c *Channel) Push(p *grpc.Package) (err error) {
 	return
 }
 
-func (c *Channel) Listen() *grpc.Package {
-	return <-c.signal
-}
+//func (c *Channel) Listen() (*grpc.Package, error) {
+//	return <-c.signal
+//}

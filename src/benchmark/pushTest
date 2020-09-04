@@ -1,4 +1,4 @@
-curl -d 'hello' "http://localhost:2333/bdim/push?room=1&user=1"
+t5
 
 bin/comet -conf=/Users/wangyubo/bdim/src/cmd/comet/comet.toml
 bin/worker -conf=/Users/wangyubo/bdim/src/cmd/worker/worker.toml

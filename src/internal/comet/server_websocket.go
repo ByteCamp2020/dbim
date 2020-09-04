@@ -50,8 +50,15 @@ func NewClient(conn *websocket.Conn, c *Channel, roomID int32) *Client {
 
 func (c *Client) pushProc() {
 	for {
-		info := c.channel.Listen()
+		info, ok := <- c.channel.signal
+		if !ok {
+			log.Print("STOP")
+			return
+		}
 		log.Print(info)
+		if c.conn == nil {
+			return
+		}
 		err := c.conn.WriteMessage(websocket.BinaryMessage, info.Body)
 		if err != nil {
 			return
@@ -59,12 +66,12 @@ func (c *Client) pushProc() {
 	}
 }
 
-func (cm *ClientManager) watch(c *Client) {
+func (c *Client) watch() {
 	for {
 		_, _, err := c.conn.ReadMessage()
 		if err != nil {
 			log.Print("delected found,", err)
-			cm.del(c)
+			c.del()
 			return
 		}
 	}
@@ -78,18 +85,23 @@ func (cm *ClientManager) registerPros() {
 	for {
 		register := <-registerCh
 		// new channel
-		log.Print(len(registerCh))
-
 		ch := NewChannel()
 		cm.comet.Put(ch, register.roomID)
 		client := NewClient(register.conn, ch, register.roomID)
-		go cm.watch(client)
+		register.conn = nil
+		go client.watch()
 	}
 }
 
-func (cm *ClientManager) del(c *Client) {
+func (c *Client) del (){
+	//log.Print("Before del")
 	c.channel.Room.Del(c.channel)
+	close(c.channel.signal)
 	c.conn.Close()
+	if c.conn != nil {
+		c.conn = nil
+	}
+	//log.Print("After del")
 }
 
 func StartWebSocket(addr string) {
@@ -128,6 +140,5 @@ func serveHTTP(w http.ResponseWriter, r *http.Request) {
 		roomID: int32(roomid),
 	}
 	log.Print(fmt.Sprintf("New connect to Room%v\n", roomid))
-	log.Print(len(registerCh))
 	registerCh <- register
 }
