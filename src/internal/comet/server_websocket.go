@@ -50,7 +50,7 @@ func NewClient(conn *websocket.Conn, c *Channel, roomID int32) *Client {
 
 func (c *Client) pushProc() {
 	for {
-		info, ok := <- c.channel.signal
+		info, ok := <-c.channel.signal
 		if !ok {
 			log.Print("STOP")
 			return
@@ -93,7 +93,7 @@ func (cm *ClientManager) registerPros() {
 	}
 }
 
-func (c *Client) del (){
+func (c *Client) del() {
 	//log.Print("Before del")
 	c.channel.Room.Del(c.channel)
 	close(c.channel.signal)

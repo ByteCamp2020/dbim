@@ -66,7 +66,7 @@ func (s *Server) test(c *gin.Context) {
 }
 
 func (s *Server) push(c *gin.Context) {
-	log.Print( "  here is a push request !!!!!!!:w")
+	log.Print("  here is a push request !!!!!!!:w")
 	var arg Arg
 	if err := c.BindQuery(&arg); err != nil {
 		errors(c, RequestErr, err.Error())

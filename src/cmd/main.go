@@ -26,6 +26,7 @@ func StartWebSocket(addr string) {
 	http.HandleFunc("/bdim/push", serveHTTP)
 	http.ListenAndServe(addr, nil)
 }
+
 // curl -d 'hello' "http://localhost:2333/bdim/push?room=1&user=1"
 func serveHTTP(w http.ResponseWriter, r *http.Request) {
 	rid := r.URL.Query()["room"]
@@ -45,6 +46,3 @@ func serveHTTP(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(roomid)
 	fmt.Println(userid)
 }
-
-
-

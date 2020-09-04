@@ -6,8 +6,8 @@ import (
 )
 
 var (
-	Conf     *Config
-	host     string
+	Conf *Config
+	host string
 )
 
 func init() {
