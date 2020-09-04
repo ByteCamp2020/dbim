@@ -119,7 +119,7 @@ func (w *Worker) getRoom(roomID int32) *Room {
 			w.rooms[roomID] = room
 		}
 		w.roomsMutex.Unlock()
-		log.Info(fmt.Sprint("new a room:%v active:%d", roomID, len(w.rooms)), nil)
+		log.Info(fmt.Sprintf("new a room:%v active:%d", roomID, len(w.rooms)), nil)
 	}
 	return room
 }
