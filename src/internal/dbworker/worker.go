@@ -60,7 +60,7 @@ func (w *DbWorker) Consume() {
 		case err := <-w.consumer.Errors():
 			log.Error("consumer error(%v)", err)
 		case n := <-w.consumer.Notifications():
-			log.Info(fmt.Sprintf("consumer rebalanced(%v)", n),nil)
+			log.Info(fmt.Sprintf("consumer rebalanced(%v)", n), nil)
 		case msg, ok := <-w.consumer.Messages():
 			if !ok {
 				return
@@ -72,10 +72,10 @@ func (w *DbWorker) Consume() {
 				log.Error(fmt.Sprintf("proto.Unmarshal(%v) ", mesg), err)
 				continue
 			}
-			log.Print("receive ",msg)
+			log.Print("receive ", msg)
 			message := string(mesg.Pm.Msg)
 			w.dao.AddMessage(mesg.Pm.User, mesg.Pm.Roomid, message, mesg.Timestamp, mesg.Visible)
-			log.Info(fmt.Sprintf("Dao:consume: %s/%d/%d\t%s\t%+v", msg.Topic, msg.Partition, msg.Offset, msg.Key, mesg),nil)
+			log.Info(fmt.Sprintf("Dao:consume: %s/%d/%d\t%s\t%+v", msg.Topic, msg.Partition, msg.Offset, msg.Key, mesg), nil)
 		}
 	}
 }

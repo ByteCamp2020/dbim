@@ -32,7 +32,7 @@ func (d *Dao) Close() error {
 	return d.conn.Close()
 }
 
-func (d *Dao) CreateTable (table string) error {
+func (d *Dao) CreateTable(table string) error {
 	sql := `
     CREATE TABLE IF NOT EXISTS ` + table + ` (
     id INT(11) NOT NULL AUTO_INCREMENT,
@@ -46,7 +46,7 @@ func (d *Dao) CreateTable (table string) error {
 
 	smt, _ := d.conn.Prepare(sql)
 	_, err := smt.Exec()
-	if (err != nil) {
+	if err != nil {
 		return err
 	}
 	return nil

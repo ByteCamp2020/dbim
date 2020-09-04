@@ -9,13 +9,13 @@ import (
 var (
 	confPath string
 	host     string
-	tp *TomlParas
+	tp       *TomlParas
 )
 
 type TomlParas struct {
-	WsAddr string
-	RPCAddr string
-	RedisAddr string
+	WsAddr     string
+	RPCAddr    string
+	RedisAddr  string
 	RPCRegAddr string
 }
 
@@ -24,13 +24,13 @@ type Config struct {
 	Comet     *Comet
 	RPCServer *RPCServer
 	Discovery *Discovery
-	Host string
+	Host      string
 }
 
 func init() {
 	host, _ = os.Hostname()
 	tp = &TomlParas{}
-	tp.WsAddr ="0.0.0.0:3101"
+	tp.WsAddr = "0.0.0.0:3101"
 	tp.RPCAddr = "0.0.0.0:3209"
 	tp.RPCRegAddr = os.Getenv("COMET_GRPC_SERVER")
 	tp.RedisAddr = "redis://10.108.21.18:6379"
@@ -81,7 +81,7 @@ func Init() *Config {
 // port
 type RPCServer struct {
 	Addr              string
-	RegAddr 		  string
+	RegAddr           string
 	Timeout           time.Duration
 	IdleTimeout       time.Duration
 	MaxLifeTime       time.Duration
@@ -102,6 +102,6 @@ type Discovery struct {
 }
 
 type WebSocket struct {
-	WsAddr   string
+	WsAddr string
 	RoomNo int
 }

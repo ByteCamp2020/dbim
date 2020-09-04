@@ -102,7 +102,7 @@ func (c *Comet) process(roomChan chan *comet.Package) {
 			Body:   roomArg.Body,
 		})
 		if err != nil {
-			log.Error(fmt.Sprintf("c.client.BroadcastRoom(%s, reply) serverId:%s ", roomArg, c.serverID),err)
+			log.Error(fmt.Sprintf("c.client.BroadcastRoom(%s, reply) serverId:%s ", roomArg, c.serverID), err)
 		}
 	}
 

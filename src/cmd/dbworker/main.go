@@ -19,7 +19,7 @@ func main() {
 		panic(err)
 	}
 	c := conf.Conf
-	log.Info(fmt.Sprintf("DbWorker: Starting dbworker, cfg:%v", c),nil)
+	log.Info(fmt.Sprintf("DbWorker: Starting dbworker, cfg:%v", c), nil)
 	dbWorker := dbworker.New(c)
 	go dbWorker.Consume()
 

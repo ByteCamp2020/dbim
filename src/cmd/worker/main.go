@@ -33,11 +33,11 @@ func main() {
 
 	for {
 		s := <-c
-		log.Info(fmt.Sprintf("bdim-worker get a signal %s", s.String()),nil)
+		log.Info(fmt.Sprintf("bdim-worker get a signal %s", s.String()), nil)
 		switch s {
 		case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT:
 			w.Close()
-			log.Info(fmt.Sprintf("bdim-worker [version: %s] exit", ver),nil)
+			log.Info(fmt.Sprintf("bdim-worker [version: %s] exit", ver), nil)
 			return
 		case syscall.SIGHUP:
 		default:

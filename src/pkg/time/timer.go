@@ -136,7 +136,7 @@ func (t *Timer) add(td *TimerData) {
 		}
 	}
 	if Debug {
-		log.Info(fmt.Sprintf("timer: push item key: %s, expire: %s, index: %d", td.Key, td.ExpireString(), td.index),nil)
+		log.Info(fmt.Sprintf("timer: push item key: %s, expire: %s, index: %d", td.Key, td.ExpireString(), td.index), nil)
 	}
 }
 

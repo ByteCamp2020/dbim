@@ -31,7 +31,7 @@ func Info(s string, err error) {
 	}
 }
 
-func Print (s ...interface{}) {
+func Print(s ...interface{}) {
 	if debug == true {
 		fmt.Println(s)
 	}

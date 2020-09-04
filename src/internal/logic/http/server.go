@@ -3,6 +3,7 @@ package http
 import (
 	"bdim/src/internal/logic"
 	"bdim/src/internal/logic/conf"
+	"bdim/src/models/log"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"
@@ -65,6 +66,7 @@ func (s *Server) test(c *gin.Context) {
 }
 
 func (s *Server) push(c *gin.Context) {
+	log.Print( "  here is a push request !!!!!!!:w")
 	var arg Arg
 	if err := c.BindQuery(&arg); err != nil {
 		errors(c, RequestErr, err.Error())
@@ -77,7 +79,7 @@ func (s *Server) push(c *gin.Context) {
 		return
 	}
 	// check the forbidden words
-	if (s.logic.C.HTTPServer.IsForbidden == 1 && s.logic.DFA != nil ) && s.logic.DFA.CheckSentence(string(msg)) == false {
+	if (s.logic.C.HTTPServer.IsForbidden == 1 && s.logic.DFA != nil) && s.logic.DFA.CheckSentence(string(msg)) == false {
 		errors(c, RequestErr, "forbidden word")
 		return
 	}
@@ -92,11 +94,10 @@ func (s *Server) push(c *gin.Context) {
 		errors(c, ServerErr, err.Error())
 		return
 	}
-	result(c,  OK)
+	result(c, OK)
 }
 
-
-func (s *Server) query (c *gin.Context) {
+func (s *Server) query(c *gin.Context) {
 	uid := c.Query("uid")
 	roomid := c.Query("roomid")
 	timestamp := c.Query("timestamp")

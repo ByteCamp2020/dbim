@@ -16,8 +16,8 @@ const (
 )
 
 type resp struct {
-	Code    int         `json:"code"`
-	Message string      `json:"message"`
+	Code    int    `json:"code"`
+	Message string `json:"message"`
 }
 
 func errors(c *gin.Context, code int, msg string) {

@@ -10,10 +10,10 @@ import (
 var (
 	confPath  string
 	redisAddr string
-	group string
-	topic string
-	brokers []string
-	host string
+	group     string
+	topic     string
+	brokers   []string
+	host      string
 	// Conf config
 	Conf *Config
 )
@@ -24,7 +24,7 @@ func init() {
 	group = "bdim-worker"
 	topic = "kafkatopic"
 	var broker string
-	broker ="10.108.21.19:9092"
+	broker = "10.108.21.19:9092"
 	brokers = append(brokers, broker)
 }
 

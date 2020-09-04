@@ -2,7 +2,6 @@ package comet
 
 import (
 	"bdim/src/api/comet/grpc"
-	"bufio"
 )
 
 type Channel struct {
@@ -10,7 +9,6 @@ type Channel struct {
 	signal chan *grpc.Package
 	Next   *Channel
 	Prev   *Channel
-	Writer bufio.Reader
 }
 
 func NewChannel() *Channel {
@@ -19,7 +17,6 @@ func NewChannel() *Channel {
 		signal: make(chan *grpc.Package, 1024),
 		Next:   nil,
 		Prev:   nil,
-		Writer: bufio.Reader{},
 	}
 
 	return c

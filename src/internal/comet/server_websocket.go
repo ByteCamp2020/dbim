@@ -31,9 +31,9 @@ type Register struct {
 
 func NewClientManage(cfg *conf.WebSocket, comet *Comet) *ClientManager {
 	cm := &ClientManager{
-		addr:    cfg.WsAddr,
-		comet:   comet,
-		cfg:     cfg,
+		addr:  cfg.WsAddr,
+		comet: comet,
+		cfg:   cfg,
 	}
 	go cm.registerPros()
 	return cm
@@ -107,7 +107,7 @@ func serveHTTP(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 	temprid := r.URL.Query()["roomid"]
-	if (len(temprid) < 1) {
+	if len(temprid) < 1 {
 		log.Error("Args wrong", fmt.Errorf("roomid wrong"))
 		return
 	}

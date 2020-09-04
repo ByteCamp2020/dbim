@@ -10,17 +10,17 @@ import (
 
 var (
 	// Conf config
-	Conf     *Config
-	confPath string
-	httpAddr string
-	isLimit bool
+	Conf            *Config
+	confPath        string
+	httpAddr        string
+	isLimit         bool
 	isForbiddenWord int
-	redisAddr string
-	count int
-	dur string
-	topic string
-	brokers []string
-	host      string
+	redisAddr       string
+	count           int
+	dur             string
+	topic           string
+	brokers         []string
+	host            string
 )
 
 func init() {

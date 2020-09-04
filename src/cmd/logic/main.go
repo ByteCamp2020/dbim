@@ -24,7 +24,7 @@ func main() {
 	if err := conf.Init(); err != nil {
 		panic(err)
 	}
-	log.Info(fmt.Sprintf("bdim-logic [version: %s env: %+v] start", ver, conf.Conf),nil)
+	log.Info(fmt.Sprintf("bdim-logic [version: %s env: %+v] start", ver, conf.Conf), nil)
 
 	// logic
 	srv := logic.New(conf.Conf)
@@ -42,7 +42,7 @@ func main() {
 		case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT:
 			srv.Close()
 			httpSrv.Close()
-			log.Info(fmt.Sprintf("bdim-logic [version: %s] exit", ver),nil)
+			log.Info(fmt.Sprintf("bdim-logic [version: %s] exit", ver), nil)
 			return
 		case syscall.SIGHUP:
 		default:

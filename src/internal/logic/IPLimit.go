@@ -9,7 +9,7 @@ import (
 
 type Limiter struct {
 	// Redis client connection.
-	rc *redis.Client
+	rc    *redis.Client
 	Count int64
 	Dur   string
 }
@@ -52,7 +52,7 @@ func (l *Limiter) Allow(key string, events int64, per time.Duration) bool {
 
 func (l *Limiter) UserLimit(userID string) bool {
 	getRes := l.rc.Get(userID)
-	pipe:= l.rc.TxPipeline()
+	pipe := l.rc.TxPipeline()
 	timeDur, _ := time.ParseDuration(l.Dur)
 	pipe.Set(userID, 0, timeDur)
 	_, _ = pipe.Exec()

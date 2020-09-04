@@ -32,7 +32,7 @@ func (d *dbc) Close() error {
 	return d.conn.Close()
 }
 
-func (d *dbc) CreateTable (table string) error {
+func (d *dbc) CreateTable(table string) error {
 	sql := `
     CREATE TABLE IF NOT EXISTS ` + table + ` (
     id INT(11) NOT NULL AUTO_INCREMENT,
@@ -47,19 +47,19 @@ func (d *dbc) CreateTable (table string) error {
 	log.Print("\n" + sql + "\n")
 	smt, _ := d.conn.Prepare(sql)
 	_, err := smt.Exec()
-	if (err != nil) {
+	if err != nil {
 		return err
 	}
 	return nil
 }
 
 type Message struct {
-	Id int   `json:"id"`
-	Uid string `json:"uid"`
-	Roomid int `json:"room_id"`
-	Msg string `json:"message"`
-	Timestamp int `json:"time_stamp"`
-	Visible int `json:"visible"`
+	Id        int    `json:"id"`
+	Uid       string `json:"uid"`
+	Roomid    int    `json:"room_id"`
+	Msg       string `json:"message"`
+	Timestamp int    `json:"time_stamp"`
+	Visible   int    `json:"visible"`
 }
 
 func (d *dbc) GetMessage(uid string, roomid string, timestamp string) ([]Message, error) {
